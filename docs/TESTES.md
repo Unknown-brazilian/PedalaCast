@@ -57,3 +57,11 @@ Marque ao executar. Nada abaixo foi executado ainda.
 - [ ] Aparelho real com várias câmeras (ex.: Xiaomi 14C): a pergunta aparece na primeira gravação; a lista mostra frontal e traseiras; sensores de 2 MP aparecem identificáveis.
 - [ ] Frontal: imagem na orientação certa na paisagem esquerda/direita e no modo vertical; vídeo gravado igual ao preview.
 - [ ] Trocar câmera várias vezes seguidas não trava nem vaza câmera aberta.
+
+## PIP da câmera frontal (v0.4.0)
+- [x] Emulador: interruptor desativado com explicação; marcador "PIP" no editor, arrastável.
+- [ ] Aparelho com câmeras concorrentes (confirmar com `adb shell dumpsys media.camera | grep -i concurrent`): ligar o PIP; a frontal aparece na janela, em pé, nas duas orientações do app.
+- [ ] Mover/redimensionar o PIP no editor e conferir no vídeo gravado.
+- [ ] Gravar 10+ min com PIP: temperatura, bateria, fps do preview, tamanho do arquivo.
+- [ ] Aparelho sem suporte (ex.: provável no Xiaomi 14C): o interruptor fica desativado e nada quebra.
+- [ ] Trocar a câmera principal para a frontal: o PIP deixa de existir sem erro.

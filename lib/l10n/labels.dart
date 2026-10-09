@@ -25,4 +25,5 @@ Map<String, String> blockNames(AppLocalizations l) => {
   'power': l.blk_power,
   'phone_status': l.blk_phone_status,
   'live_badge': l.blk_live_badge,
+  'pip': l.blk_pip,
 };

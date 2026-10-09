@@ -36,14 +36,14 @@ data class OverlayLayout(
     companion object {
         val TYPES = listOf(
             "speed_gauge", "distance_climb", "minimap", "elevation_profile", "grade_badge",
-            "hr", "cadence", "power", "phone_status", "live_badge",
+            "hr", "cadence", "power", "phone_status", "live_badge", "pip",
         )
 
         fun default() = OverlayLayout(
             TYPES.map {
                 BlockSpec(
                     id = it, type = it, anchor = "auto", sizePreset = SizePreset.small,
-                    enabled = it != "phone_status",
+                    enabled = it != "phone_status" && it != "pip",
                 )
             }
         )

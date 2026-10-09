@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/core_channel.dart';
 import '../../l10n/app_localizations.dart';
 import '../settings/app_settings.dart';
 import 'layout_editor_screen.dart';
@@ -99,6 +100,26 @@ class LayoutScreen extends ConsumerWidget {
               onTap: () => ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text(l.layoutNoDeviceHint))),
             ),
+          FutureBuilder<bool>(
+            future: ref.read(coreProvider).pipSupported(s.cameraId),
+            builder: (context, snap) {
+              final ok = snap.data ?? false;
+              return SwitchListTile(
+                title: Text(l.blk_pip),
+                subtitle: Text(
+                  snap.connectionState != ConnectionState.done
+                      ? '…'
+                      : ok
+                      ? l.pipHint
+                      : l.pipUnsupported,
+                ),
+                value: ok && s.pipEnabled,
+                onChanged: ok
+                    ? (v) => n.update(s.copyWith(pipEnabled: v))
+                    : null,
+              );
+            },
+          ),
           _header(context, l.layoutPhone),
           for (final t in _phone) toggle(t),
         ],

@@ -478,4 +478,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String camMp(int mp) {
     return '$mp MP';
   }
+
+  @override
+  String get blk_pip => 'Front camera (PIP)';
+
+  @override
+  String get pipHint =>
+      'Shows the front camera in a window on the video. Drag and resize it in \"Move and resize blocks\".';
+
+  @override
+  String get pipUnsupported =>
+      'This phone cannot use the front and rear cameras at the same time (or the chosen camera is the front one).';
 }

@@ -14,6 +14,7 @@ void main() {
       sizePreset: 'large',
       cameraId: '2',
       cameraAsked: true,
+      pipEnabled: true,
       posPortrait: {'minimap': BlockPos(x: 0.1, y: 0.2, scale: 1.5)},
     );
     final c = s.copyWith(mic: false);
@@ -25,6 +26,7 @@ void main() {
     expect(c.sizePreset, 'large');
     expect(c.cameraId, '2');
     expect(c.cameraAsked, isTrue);
+    expect(c.pipEnabled, isTrue);
     expect(c.posPortrait['minimap']?.scale, 1.5);
     expect(c.mic, isFalse);
   });
@@ -60,5 +62,14 @@ void main() {
     expect(d['a']?.scale, 2);
     expect(d.containsKey('b'), isFalse); // vazio não é salvo
     expect(decodePos('lixo'), isEmpty);
+  });
+
+  test('PIP vem desligado por padrão e liga só com pipEnabled', () {
+    Map<String, dynamic> pipBlock(AppSettings s) =>
+        ((jsonDecode(s.layoutJson) as Map)['blocks'] as List)
+            .cast<Map<String, dynamic>>()
+            .firstWhere((e) => e['type'] == 'pip');
+    expect(pipBlock(const AppSettings())['enabled'], isFalse);
+    expect(pipBlock(const AppSettings(pipEnabled: true))['enabled'], isTrue);
   });
 }

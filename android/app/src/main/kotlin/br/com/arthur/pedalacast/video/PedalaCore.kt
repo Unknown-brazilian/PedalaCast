@@ -35,7 +35,7 @@ import java.util.Locale
 
 data class VideoConfig(
     val width: Int = 1920, val height: Int = 1080, val fps: Int = 30,
-    val bitrate: Int = 12_000_000, val portrait: Boolean = false, val cameraId: String? = null, val micEnabled: Boolean = true,
+    val bitrate: Int = 12_000_000, val portrait: Boolean = false, val cameraId: String? = null, val pip: Boolean = false, val micEnabled: Boolean = true,
     val autoPause: Boolean = false, val privacyRadiusM: Double = 300.0,
 ) {
     /** Tamanho final do quadro (já com a rotação aplicada). */
@@ -210,12 +210,20 @@ object PedalaCore {
         val s = GenericStream(app, liveChecker, video, audio)
         if (!s.prepareVideo(cfg.width, cfg.height, cfg.bitrate, cfg.fps, 2, if (cfg.portrait) 90 else 0)) error("Câmera/encoder não suportam ${cfg.width}x${cfg.height}")
         if (!s.prepareAudio(44100, true, 128_000)) error("Falha ao preparar o áudio")
+        // PIP da frontal: filtro próprio, antes do overlay (a borda e os textos ficam por cima).
+        val backId = backCameraIdFor(validId)
+        val front = if (cfg.pip) backId?.let { PipCamera.frontIdFor(app, it) } else null
+        if (cfg.pip && front == null) lastError = "PIP não suportado por este aparelho (ou pela câmera escolhida)"
+        val pf = if (front != null) ImageFilterRender().apply { setScale(1f, 1f); setPosition(0f, 0f) } else null
+        pf?.let { s.getGlInterface().addFilter(it) }
         val f = ImageFilterRender().apply { setScale(100f, 100f); setPosition(0f, 0f) }
         s.getGlInterface().addFilter(f)
+        pipFilter = pf
         filter = f
         bitmaps = Array(2) { Bitmap.createBitmap(cfg.frameW, cfg.frameH, Bitmap.Config.ARGB_8888) }
         s.startPreview(surface, cfg.frameW, cfg.frameH)
         stream = s
+        if (front != null && pf != null) startPip(front, cfg.portrait, pf)
         state = State.PREVIEW
         startTelemetry()
         startOverlayLoop()
@@ -234,6 +242,7 @@ object PedalaCore {
         stopOverlayLoop()
         runCatching { stream?.stopPreview() }
         runCatching { stream?.release() }
+        runCatching { pip?.stop() }; pip = null; pipFilter = null
         stream = null; filter = null; bitmaps = null
     }
 
@@ -348,11 +357,57 @@ object PedalaCore {
         }
         val bm = bms[bmIdx]
         bmIdx = 1 - bmIdx
-        renderer.render(bm, layout, OverlayState(sample, track, planned, badge, elapsed, pz, clockText()))
+        val ov = OverlayState(sample, track, planned, badge, elapsed, pz, clockText(), pipAspect = pip?.uprightAspect)
+        renderer.render(bm, layout, ov)
         f.setImage(bm)
+        updatePipPlacement(bm.width, bm.height, ov)
     }
 
     @Volatile var planned: List<br.com.arthur.pedalacast.overlay.LatLon>? = null
+
+    // ---------------- PIP (câmera frontal) ----------------
+
+    private var pip: PipCamera? = null
+    private var pipFilter: ImageFilterRender? = null
+
+    /** ID da traseira que o pipeline principal vai usar (escolhida, ou a primeira traseira). */
+    private fun backCameraIdFor(selected: String?): String? {
+        val cams = CameraCatalog.list(app)
+        if (selected != null) {
+            val c = cams.firstOrNull { it["id"] == selected }
+            return if (c?.get("facing") == "back") selected else null    // frontal como principal: sem PIP
+        }
+        return cams.firstOrNull { it["facing"] == "back" }?.get("id") as String?
+    }
+
+    /** O aparelho consegue frontal + traseira ao mesmo tempo com esta câmera principal? */
+    fun pipSupported(cameraId: String?): Boolean {
+        val valid = cameraId?.takeIf { id -> CameraCatalog.list(app).any { it["id"] == id } }
+        val back = backCameraIdFor(valid) ?: return false
+        return PipCamera.frontIdFor(app, back) != null
+    }
+
+    private fun startPip(frontId: String, portrait: Boolean, pf: ImageFilterRender) {
+        val cam = PipCamera(app)
+        cam.onFrame = { bm -> pf.setImage(bm) }
+        cam.onError = { msg ->
+            lastError = msg
+            main.post { runCatching { pip?.stop() }; pip = null; pipFilter?.setScale(0.01f, 0.01f); layoutVersion++ }
+        }
+        runCatching { cam.start(frontId, portrait); pip = cam }
+            .onFailure { lastError = "PIP: " + (it.message ?: "falha ao abrir a frontal"); runCatching { cam.stop() } }
+    }
+
+    /** Atualiza posição/tamanho do PIP no quadro e o tamanho do Bitmap que a câmera gera. */
+    private fun updatePipPlacement(fw: Int, fh: Int, ov: OverlayState) {
+        val cam = pip ?: return
+        val pf = pipFilter ?: return
+        val r = renderer.place(fw.toFloat(), fh.toFloat(), layout, ov)["pip"]?.rect
+        if (r == null) { pf.setScale(0.01f, 0.01f); return }       // bloco desligado: some
+        cam.targetW = r.width().toInt(); cam.targetH = r.height().toInt()
+        pf.setScale(r.width() / fw * 100f, r.height() / fh * 100f)
+        pf.setPosition(r.left / fw * 100f, r.top / fh * 100f)
+    }
 
     private fun clockText() = SimpleDateFormat("HH:mm", renderer.locale).format(Date())
 
@@ -368,7 +423,7 @@ object PedalaCore {
             speedMps = 7.2, altitudeM = track.last().altM, gradePct = 6.5, distanceM = 2000.0, ascentM = 182.0,
             hrBpm = 148, cadenceRpm = 86, powerW = 210, batteryPct = 72, signalLevel = 3, networkType = "Móvel",
         )
-        return OverlayState(sample, track, null, recLabel, 754_000, null, "08:42")
+        return OverlayState(sample, track, null, recLabel, 754_000, null, "08:42", pipAspect = 0.75f, pipPlaceholder = true)
     }
 
     private fun demoBackground(w: Int, h: Int): Bitmap {

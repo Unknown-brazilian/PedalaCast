@@ -243,7 +243,9 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
 
   Future<void> _startPreview() async {
     final s = ref.read(settingsProvider);
+    final labels = overlayLabels(context);
     try {
+      final pip = s.pipEnabled && await _core.pipSupported(s.cameraId);
       final id = await _core.startPreview(
         width: widget.live ? s.liveWidth : s.width,
         height: widget.live ? s.liveHeight : s.height,
@@ -251,11 +253,12 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
         bitrate: widget.live ? s.liveBitrate : s.bitrate,
         portrait: s.portrait,
         cameraId: s.cameraId,
+        pip: pip,
         mic: s.mic,
         autoPause: s.autoPause,
         simulation: s.simulation,
         layout: s.layoutJson,
-        labels: overlayLabels(context),
+        labels: labels,
       );
       await _core.setKeepScreenOn(s.keepScreenOn);
       if (mounted) {

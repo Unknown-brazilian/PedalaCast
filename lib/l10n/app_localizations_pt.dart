@@ -482,4 +482,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String camMp(int mp) {
     return '$mp MP';
   }
+
+  @override
+  String get blk_pip => 'Câmera frontal (PIP)';
+
+  @override
+  String get pipHint =>
+      'Mostra a câmera frontal em uma janela no vídeo. Arraste e redimensione em \"Mover e redimensionar blocos\".';
+
+  @override
+  String get pipUnsupported =>
+      'Este celular não consegue usar as câmeras frontal e traseira ao mesmo tempo (ou a câmera escolhida é a frontal).';
 }

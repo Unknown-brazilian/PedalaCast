@@ -959,6 +959,24 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'{mp} MP'**
   String camMp(int mp);
+
+  /// No description provided for @blk_pip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Câmera frontal (PIP)'**
+  String get blk_pip;
+
+  /// No description provided for @pipHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mostra a câmera frontal em uma janela no vídeo. Arraste e redimensione em \"Mover e redimensionar blocos\".'**
+  String get pipHint;
+
+  /// No description provided for @pipUnsupported.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este celular não consegue usar as câmeras frontal e traseira ao mesmo tempo (ou a câmera escolhida é a frontal).'**
+  String get pipUnsupported;
 }
 
 class _AppLocalizationsDelegate

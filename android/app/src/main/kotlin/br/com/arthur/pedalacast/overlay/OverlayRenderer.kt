@@ -28,6 +28,10 @@ data class OverlayState(
     val elapsedMs: Long = 0,
     val privacy: PrivacyZone? = null,
     val clockText: String = "",
+    /** Proporção (l/a) do PIP já em pé; null = PIP inativo. */
+    val pipAspect: Float? = null,
+    /** No editor não há câmera: desenha um marcador no lugar do PIP. */
+    val pipPlaceholder: Boolean = false,
 )
 
 /**
@@ -140,6 +144,13 @@ class OverlayRenderer(private val palette: BrandPalette) {
             val bw = measure(phoneText(s, st.clockText), 18f * u) + bars + 20f * u; val bh = 30f * u
             out["phone_status"] = custom(spec, bw, bh, u) ?: Placed(RectF(w - m - bw, m, w - m, m + bh), u)
         }
+        layout.block("pip")?.takeIf { st.pipAspect != null }?.let { spec ->
+            val u = unit(spec); val long = 160f * u; val asp = st.pipAspect!!
+            val bw = if (asp < 1f) long * asp else long
+            val bh = if (asp < 1f) long else long / asp
+            out["pip"] = custom(spec, bw, bh, u)
+                ?: Placed(RectF(w - m - bw, m + 38f * u0, w - m, m + 38f * u0 + bh), u)
+        }
         return out
     }
 
@@ -161,8 +172,16 @@ class OverlayRenderer(private val palette: BrandPalette) {
                 "cadence" -> s?.cadenceRpm?.let { drawChip(c, r.left, r.top, u, "$it", "RPM") }
                 "power" -> s?.powerW?.let { drawChip(c, r.left, r.top, u, "$it", "W") }
                 "phone_status" -> s?.let { drawPhoneStatus(c, r.right, r.top, u, it, st.clockText) }
+                "pip" -> if (st.pipPlaceholder) drawPipPlaceholder(c, r, u)   // a câmera real é composta pelo PedalaCore
             }
         }
+    }
+
+    private fun drawPipPlaceholder(c: Canvas, r: RectF, u: Float) {
+        panel(c, r, 14f * u, 0.65f)
+        p.style = Paint.Style.STROKE; p.strokeWidth = 2f * u; p.color = alpha(palette.text, 0.8f)
+        c.drawRoundRect(r, 14f * u, 14f * u, p)
+        text(c, "PIP", r.centerX(), r.centerY() + 7f * u, 20f * u, palette.accent, Paint.Align.CENTER)
     }
 
     private fun panel(c: Canvas, r: RectF, radius: Float, a: Float = 0.55f) {

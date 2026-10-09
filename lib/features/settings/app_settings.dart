@@ -64,6 +64,7 @@ class AppSettings {
     this.hideMinimap = false,
     this.cameraId = '',
     this.cameraAsked = false,
+    this.pipEnabled = false,
     this.posLandscape = const {},
     this.posPortrait = const {},
   });
@@ -87,6 +88,9 @@ class AppSettings {
   /// ID da câmera preferida ('' = automática: traseira principal).
   final String cameraId;
   final bool cameraAsked;
+
+  /// PIP da câmera frontal (só tem efeito em aparelhos que suportam duas câmeras ao mesmo tempo).
+  final bool pipEnabled;
   final Map<String, BlockPos> posLandscape;
   final Map<String, BlockPos> posPortrait;
 
@@ -110,6 +114,7 @@ class AppSettings {
     'power',
     'phone_status',
     'live_badge',
+    'pip',
   ];
 
   String get layoutJson => jsonEncode({
@@ -118,7 +123,7 @@ class AppSettings {
         {
           'id': t,
           'type': t,
-          'enabled': !disabled.contains(t),
+          'enabled': t == 'pip' ? pipEnabled : !disabled.contains(t),
           'anchor': 'auto',
           'sizePreset': sizePreset,
           ...?blockPos[t]?.toJson(),
@@ -147,6 +152,7 @@ class AppSettings {
     bool? hideMinimap,
     String? cameraId,
     bool? cameraAsked,
+    bool? pipEnabled,
     Map<String, BlockPos>? posLandscape,
     Map<String, BlockPos>? posPortrait,
   }) => AppSettings(
@@ -167,6 +173,7 @@ class AppSettings {
     hideMinimap: hideMinimap ?? this.hideMinimap,
     cameraId: cameraId ?? this.cameraId,
     cameraAsked: cameraAsked ?? this.cameraAsked,
+    pipEnabled: pipEnabled ?? this.pipEnabled,
     posLandscape: posLandscape ?? this.posLandscape,
     posPortrait: posPortrait ?? this.posPortrait,
   );
@@ -201,6 +208,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
       hideMinimap: p.getBool('hideMinimap') ?? false,
       cameraId: p.getString('cameraId') ?? '',
       cameraAsked: p.getBool('cameraAsked') ?? false,
+      pipEnabled: p.getBool('pipEnabled') ?? false,
       posLandscape: decodePos(p.getString('posLandscape')),
       posPortrait: decodePos(p.getString('posPortrait')),
     );
@@ -226,6 +234,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
     await p.setBool('hideMinimap', s.hideMinimap);
     await p.setString('cameraId', s.cameraId);
     await p.setBool('cameraAsked', s.cameraAsked);
+    await p.setBool('pipEnabled', s.pipEnabled);
     await p.setString('posLandscape', encodePos(s.posLandscape));
     await p.setString('posPortrait', encodePos(s.posPortrait));
   }

@@ -219,5 +219,8 @@
         "type": "int"
       }
     }
-  }
+  },
+  "blk_pip": "Front camera (PIP)",
+  "pipHint": "Shows the front camera in a window on the video. Drag and resize it in \"Move and resize blocks\".",
+  "pipUnsupported": "This phone cannot use the front and rear cameras at the same time (or the chosen camera is the front one)."
 }

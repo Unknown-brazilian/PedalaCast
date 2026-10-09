@@ -24,6 +24,7 @@ class CoreChannel {
     required int bitrate,
     required bool portrait,
     String cameraId = '',
+    bool pip = false,
     required bool mic,
     required bool autoPause,
     required bool simulation,
@@ -36,6 +37,7 @@ class CoreChannel {
     'bitrate': bitrate,
     'portrait': portrait,
     'cameraId': cameraId,
+    'pip': pip,
     'mic': mic,
     'autoPause': autoPause,
     'simulation': simulation,
@@ -96,6 +98,13 @@ class CoreChannel {
   Future<List<Map<dynamic, dynamic>>> listCameras() async =>
       ((await _control.invokeMethod<List<dynamic>>('listCameras')) ?? const [])
           .cast<Map<dynamic, dynamic>>();
+
+  /// O aparelho abre câmera frontal e traseira ao mesmo tempo (com a câmera principal escolhida)?
+  Future<bool> pipSupported(String cameraId) async =>
+      (await _control.invokeMethod<bool>('pipSupported', {
+        'cameraId': cameraId,
+      })) ??
+      false;
   Future<bool> needsBackgroundHelp() async =>
       (await _control.invokeMethod<bool>('needsBackgroundHelp')) ?? false;
   Future<void> openBatterySettings() =>

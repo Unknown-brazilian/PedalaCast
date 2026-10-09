@@ -219,5 +219,8 @@
         "type": "int"
       }
     }
-  }
+  },
+  "blk_pip": "Câmera frontal (PIP)",
+  "pipHint": "Mostra a câmera frontal em uma janela no vídeo. Arraste e redimensione em \"Mover e redimensionar blocos\".",
+  "pipUnsupported": "Este celular não consegue usar as câmeras frontal e traseira ao mesmo tempo (ou a câmera escolhida é a frontal)."
 }

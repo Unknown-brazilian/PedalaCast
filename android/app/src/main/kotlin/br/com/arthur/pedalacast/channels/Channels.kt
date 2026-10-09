@@ -64,6 +64,7 @@ class Channels(private val activity: Activity, engine: FlutterEngine) {
                     fps = (a["fps"] as? Int) ?: 30, bitrate = (a["bitrate"] as? Int) ?: 12_000_000,
                     portrait = (a["portrait"] as? Boolean) ?: false,
                     cameraId = (a["cameraId"] as? String)?.takeIf { it.isNotBlank() },
+                    pip = (a["pip"] as? Boolean) ?: false,
                     micEnabled = (a["mic"] as? Boolean) ?: true, autoPause = (a["autoPause"] as? Boolean) ?: false,
                 )
                 PedalaCore.simulation = (a["simulation"] as? Boolean) ?: false
@@ -156,6 +157,7 @@ class Channels(private val activity: Activity, engine: FlutterEngine) {
                     .onSuccess { main.post { result.success(it) } }
                     .onFailure { main.post { result.error("editor", it.message, null) } }
             }.start()
+            "pipSupported" -> result.success(PedalaCore.pipSupported((a["cameraId"] as? String)?.takeIf { it.isNotBlank() }))
             "listCameras" -> result.success(br.com.arthur.pedalacast.video.CameraCatalog.list(activity))
             "hasBarometer" -> result.success(PedalaCore.hasBarometer())
             "listRecordings" -> result.success(Storage.list(activity))
