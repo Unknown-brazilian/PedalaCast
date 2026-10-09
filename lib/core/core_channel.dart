@@ -38,6 +38,7 @@ class CoreChannel {
     'autoPause': autoPause,
     'simulation': simulation,
     'layout': layout,
+    ...labels,
   }))!;
 
   Future<void> stopPreview() => _control.invokeMethod('stopPreview');
@@ -62,8 +63,13 @@ class CoreChannel {
       _control.invokeMethod('setSimulation', {'enabled': on});
   Future<void> setKeepScreenOn(bool on) =>
       _control.invokeMethod('setKeepScreenOn', {'enabled': on});
-  Future<String> renderDebugPng(String layout) async => (await _control
-      .invokeMethod<String>('renderDebugPng', {'layout': layout}))!;
+  Future<String> renderDebugPng(
+    String layout,
+    Map<String, String> labels,
+  ) async => (await _control.invokeMethod<String>('renderDebugPng', {
+    'layout': layout,
+    ...labels,
+  }))!;
   Future<bool> needsBackgroundHelp() async =>
       (await _control.invokeMethod<bool>('needsBackgroundHelp')) ?? false;
   Future<void> openBatterySettings() =>

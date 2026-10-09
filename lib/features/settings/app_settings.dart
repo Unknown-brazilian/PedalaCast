@@ -105,18 +105,18 @@ class AppSettings {
   );
 }
 
+/// Preferências já carregadas em main() (evita ler valores padrão antes do carregamento).
+final sharedPrefsProvider = Provider<SharedPreferences>(
+  (ref) => throw UnimplementedError('sharedPrefsProvider não inicializado'),
+);
+
 class SettingsNotifier extends Notifier<AppSettings> {
-  SharedPreferences? _prefs;
+  late final SharedPreferences _prefs = ref.read(sharedPrefsProvider);
 
   @override
   AppSettings build() {
-    _load();
-    return const AppSettings();
-  }
-
-  Future<void> _load() async {
-    final p = _prefs = await SharedPreferences.getInstance();
-    state = AppSettings(
+    final p = ref.read(sharedPrefsProvider);
+    return AppSettings(
       height: p.getInt('height') ?? 1080,
       portrait: p.getBool('portrait') ?? false,
       fps: p.getInt('fps') ?? 30,
@@ -137,7 +137,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
 
   Future<void> update(AppSettings s) async {
     state = s;
-    final p = _prefs ?? await SharedPreferences.getInstance();
+    final p = _prefs;
     await p.setInt('height', s.height);
     await p.setBool('portrait', s.portrait);
     await p.setInt('fps', s.fps);

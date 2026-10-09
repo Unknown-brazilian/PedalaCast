@@ -17,3 +17,8 @@ Pendente / não verificado (sem aparelho Android conectado nesta máquina):
 - Confirmar nome, bio e links do `about_config.json`; `privacyPolicyUrl` e `feedbackEmail` estão vazios (seções ocultas).
 - Blocos de sensores (FC/cadência/potência) existem no renderizador, mas só terão dados na Fase 3.
 - QR em duas carteiras (ver TESTES).
+
+## Verificação no emulador (Android 14, x86_64, câmera virtual) — v0.2.1
+Gravação completa verificada: preview com overlay, modo simulação (25 km/h, distância subindo), MP4 H.264 1920x1080 + AAC com overlay gravado, GPX e JSON salvos, parar segurando, idiomas en/es, tela de debug do overlay (PNG).
+Bugs achados e corrigidos nesse teste: leitor de GPX quebrava no Android (parser XML); aviso de segurança reaparecia e configurações podiam ser ignoradas ao abrir a gravação (carregamento assíncrono); idioma fixo em português; tela de debug sem rótulos; botão tonal fora da paleta.
+Ainda NÃO verificado: sensores reais (GPS/barômetro), desempenho em aparelho físico, live contra servidor real, orientação vertical, Xiaomi.

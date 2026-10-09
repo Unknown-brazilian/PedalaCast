@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/core_channel.dart';
 import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../settings/app_settings.dart';
 
 class DebugScreen extends ConsumerStatefulWidget {
@@ -37,6 +38,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                           .read(coreProvider)
                           .renderDebugPng(
                             ref.read(settingsProvider).layoutJson,
+                            overlayLabels(context),
                           );
                       if (mounted) {
                         setState(() {

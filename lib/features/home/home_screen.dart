@@ -5,6 +5,7 @@ import '../about/about_screen.dart';
 import '../debug/debug_screen.dart';
 import '../layout/layout_screen.dart';
 import '../library/library_screen.dart';
+import '../live/live_setup_screen.dart';
 import '../record/record_screen.dart';
 import '../settings/settings_screen.dart';
 
@@ -27,6 +28,15 @@ class HomeScreen extends StatelessWidget {
               icon: const Icon(Icons.directions_bike, size: 36),
               label: Text(l.homeStart, style: const TextStyle(fontSize: 22)),
               onPressed: () => go(const RecordScreen()),
+            ),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 72,
+            child: FilledButton.tonalIcon(
+              icon: const Icon(Icons.podcasts, size: 30),
+              label: Text(l.homeLive, style: const TextStyle(fontSize: 18)),
+              onPressed: () => go(const LiveSetupScreen()),
             ),
           ),
           const SizedBox(height: 16),

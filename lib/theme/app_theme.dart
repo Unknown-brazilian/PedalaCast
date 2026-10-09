@@ -50,6 +50,10 @@ class BrandColors {
       onPrimary: onAccent, // nunca branco sobre laranja
       surface: background,
       onSurface: text,
+      secondary: accent,
+      onSecondary: onAccent,
+      secondaryContainer: surface,
+      onSecondaryContainer: text,
       surfaceContainer: surface,
       onSurfaceVariant: textSecondary,
       tertiary: live, // somente AO VIVO / gravando
