@@ -1,0 +1,140 @@
+{
+  "@@locale": "pt",
+  "appName": "PedalaCast",
+  "recordTitle": "Gravar",
+  "aboutTitle": "Sobre",
+  "aboutVersion": "Versão {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutAuthor": "Autor",
+  "aboutSendFeedback": "Enviar feedback",
+  "aboutSupportTitle": "Apoie o projeto",
+  "aboutSupportText": "O PedalaCast é gratuito. Se ele foi útil, você pode apoiar com Bitcoin pela rede Lightning.",
+  "aboutLightningNote": "Este é um endereço Lightning (formato parecido com e-mail), não um endereço on-chain. Enviar on-chain não funciona.",
+  "aboutDonationDisclaimer": "Doação voluntária. Não libera recursos nem dá vantagens.",
+  "aboutCopy": "Copiar",
+  "aboutCopied": "Endereço copiado",
+  "aboutOpenWallet": "Abrir na carteira",
+  "aboutNoWallet": "Nenhum aplicativo de carteira Lightning encontrado.",
+  "aboutLegal": "Legal",
+  "aboutPrivacyPolicy": "Política de privacidade",
+  "aboutLicenses": "Licenças de código aberto",
+  "aboutSafetyTitle": "Aviso de segurança",
+  "aboutSafetyText": "Não mexa no celular em movimento. Use um suporte firme e respeite o trânsito.",
+  "homeStart": "Iniciar passeio",
+  "homeLibrary": "Gravações",
+  "homeLayout": "Layout do overlay",
+  "homeSettings": "Ajustes",
+  "homeDebug": "Debug do overlay",
+  "homeAbout": "Sobre",
+  "permTitle": "Permissões necessárias",
+  "permIntro": "Para gravar o passeio com o overlay, o PedalaCast precisa de:",
+  "permCamera": "Câmera: para filmar o passeio.",
+  "permMic": "Microfone: para gravar o som do passeio.",
+  "permLocation": "Localização precisa: para velocidade, distância, trajeto e altitude.",
+  "permNotif": "Notificações: para mostrar que a gravação está ativa.",
+  "permGrant": "Conceder permissões",
+  "permDenied": "Algumas permissões foram negadas. Abra os ajustes do sistema para concedê-las.",
+  "permOpenSettings": "Abrir ajustes",
+  "safetyTitle": "Antes de pedalar",
+  "safetyBody": "Não mexa no celular em movimento. Use um suporte firme na bike e respeite o trânsito. Para parar a gravação, segure o botão.",
+  "safetyAccept": "Entendi",
+  "recGps": "GPS",
+  "recGpsNone": "Sem GPS",
+  "recFree": "Livre {gb} GB",
+  "@recFree": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "recTemp": "{c} °C",
+  "@recTemp": {
+    "placeholders": {
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "recHoldToStop": "Segure para parar",
+  "recStart": "Iniciar",
+  "recPause": "Pausar",
+  "recResume": "Retomar",
+  "recSaved": "Gravação salva",
+  "recNoBaro": "Sem barômetro: inclinação e D+ ficam menos confiáveis.",
+  "recHot": "Celular quente. Considere reduzir a qualidade.",
+  "recLowBattery": "Bateria baixa.",
+  "recSimulation": "Simulação",
+  "recStarting": "Iniciando câmera…",
+  "recError": "Erro: {msg}",
+  "@recError": {
+    "placeholders": {
+      "msg": {
+        "type": "String"
+      }
+    }
+  },
+  "libEmpty": "Nenhuma gravação ainda.",
+  "libOpen": "Abrir",
+  "libShare": "Compartilhar",
+  "libDelete": "Excluir",
+  "libDeleteConfirm": "Excluir esta gravação?",
+  "libCancel": "Cancelar",
+  "libDeleteDo": "Excluir",
+  "libNote": "O vídeo fica em Movies/PedalaCast; o GPX e o JSON em Documents/PedalaCast.",
+  "layoutTitle": "Layout do overlay",
+  "layoutSize": "Tamanho",
+  "layoutSmall": "Pequeno",
+  "layoutMedium": "Médio",
+  "layoutLarge": "Grande",
+  "layoutBlocks": "Blocos",
+  "layoutPhone": "Celular",
+  "layoutNoDevice": "Sem dispositivo",
+  "layoutNoDeviceHint": "Conecte um sensor Bluetooth para exibir este dado (disponível em breve).",
+  "layoutFullTrack": "Mostrar trajeto completo no mini-mapa",
+  "blk_speed_gauge": "Velocímetro",
+  "blk_distance_climb": "Distância e D+",
+  "blk_minimap": "Mini-mapa",
+  "blk_elevation_profile": "Perfil de elevação",
+  "blk_grade_badge": "Selo de inclinação",
+  "blk_hr": "Batimentos",
+  "blk_cadence": "Cadência",
+  "blk_power": "Potência",
+  "blk_phone_status": "Faixa de status do celular",
+  "blk_live_badge": "Selo REC / AO VIVO",
+  "setTitle": "Ajustes",
+  "setResolution": "Resolução",
+  "set1080": "1080p (30 fps)",
+  "set720": "720p (30 fps)",
+  "setKeepScreen": "Manter a tela ligada",
+  "setMic": "Gravar microfone",
+  "setAutoPause": "Pausa automática (parado)",
+  "setPrivacy": "Zona de privacidade: {m} m",
+  "@setPrivacy": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "setPrivacyHint": "O trajeto não aparece no mini-mapa dentro deste raio do ponto de partida.",
+  "setSimulation": "Modo simulação",
+  "setSimulationHint": "Reproduz um percurso de exemplo como se fosse GPS ao vivo, para testar o overlay sem pedalar.",
+  "dbgTitle": "Debug do overlay",
+  "dbgBody": "Renderiza o overlay sobre uma imagem estática com dados fixos e salva um PNG em Pictures/PedalaCast.",
+  "dbgRender": "Gerar PNG",
+  "dbgSaved": "PNG salvo: {uri}",
+  "@dbgSaved": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  }
+}
