@@ -7,12 +7,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/core_channel.dart';
 import '../../core/telemetry/telemetry_sample.dart';
 import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
+import '../live/live_store.dart';
 import '../permissions/permissions.dart';
 import '../settings/app_settings.dart';
 import '../settings/settings_screen.dart';
 
 class RecordScreen extends ConsumerStatefulWidget {
-  const RecordScreen({super.key});
+  const RecordScreen({super.key, this.live = false});
+
+  /// Modo transmissão ao vivo (YouTube).
+  final bool live;
 
   @override
   ConsumerState<RecordScreen> createState() => _RecordScreenState();
@@ -69,7 +74,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
         before.mic != after.mic ||
         before.simulation != after.simulation ||
         before.autoPause != after.autoPause;
-    if (changed && !(status?.recording ?? false)) {
+    if (changed && !(status?.active ?? false)) {
       setState(() => _textureId = null);
       await _core.stopPreview();
       await _startPreview();
@@ -148,15 +153,16 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
     final s = ref.read(settingsProvider);
     try {
       final id = await _core.startPreview(
-        width: s.width,
-        height: s.height,
+        width: widget.live ? s.liveWidth : s.width,
+        height: widget.live ? s.liveHeight : s.height,
         fps: s.fps,
-        bitrate: s.bitrate,
+        bitrate: widget.live ? s.liveBitrate : s.bitrate,
         portrait: s.portrait,
         mic: s.mic,
         autoPause: s.autoPause,
         simulation: s.simulation,
         layout: s.layoutJson,
+        labels: overlayLabels(context),
       );
       await _core.setKeepScreenOn(s.keepScreenOn);
       if (mounted) {
@@ -178,7 +184,23 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
 
   Future<void> _start() async {
     try {
-      await _core.startRecording();
+      if (widget.live) {
+        final s = ref.read(settingsProvider);
+        final endpoint = await LiveStore().endpoint();
+        if (endpoint == null) {
+          if (mounted) {
+            setState(() => _error = AppLocalizations.of(context).liveNoKey);
+          }
+          return;
+        }
+        await _core.startLive(
+          endpoint: endpoint,
+          maxBitrate: s.liveBitrate,
+          recordLocal: s.liveRecordLocal,
+        );
+      } else {
+        await _core.startRecording();
+      }
     } on PlatformException catch (e) {
       if (mounted) setState(() => _error = e.message);
     }
@@ -186,7 +208,12 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
 
   Future<void> _stop() async {
     _hold.value = 0;
-    final uri = await _core.stopRecording();
+    String? uri;
+    if (widget.live) {
+      await _core.stopLive();
+    } else {
+      uri = await _core.stopRecording();
+    }
     if (uri != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context).recSaved)),
@@ -210,7 +237,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
     final l = AppLocalizations.of(context);
     final status = ref.watch(statusProvider).value ?? const CoreStatus();
     return PopScope(
-      canPop: !status.recording,
+      canPop: !status.active,
       child: Scaffold(
         backgroundColor: Colors.black,
         body: !_permsOk && _textureId == null && _error == null
@@ -237,11 +264,29 @@ extension on _RecordScreenState {
     final controls = _Controls(
       status: status,
       hold: _hold,
+      live: widget.live,
       horizontal: portrait,
       onStart: _start,
       onPause: _core.pauseRecording,
       onResume: _core.resumeRecording,
     );
+    final hideMap = widget.live
+        ? IconButton.filledTonal(
+            tooltip: l.liveHideMap,
+            icon: Icon(
+              ref.watch(settingsProvider.select((x) => x.hideMinimap))
+                  ? Icons.map
+                  : Icons.map_outlined,
+            ),
+            onPressed: () async {
+              final st = ref.read(settingsProvider);
+              await ref
+                  .read(settingsProvider.notifier)
+                  .update(st.copyWith(hideMinimap: !st.hideMinimap));
+              await _core.setLayout(ref.read(settingsProvider).layoutJson);
+            },
+          )
+        : null;
     final settingsBtn = IconButton.filledTonal(
       tooltip: l.recSettings,
       icon: const Icon(Icons.settings),
@@ -256,6 +301,7 @@ extension on _RecordScreenState {
               child: Row(
                 children: [
                   Expanded(child: _StatusBar(status: status)),
+                  ?hideMap,
                   settingsBtn,
                 ],
               ),
@@ -271,7 +317,11 @@ extension on _RecordScreenState {
       children: [
         Center(child: preview),
         Positioned(top: 8, left: 8, child: _StatusBar(status: status)),
-        Positioned(top: 8, right: 8, child: settingsBtn),
+        Positioned(
+          top: 8,
+          right: 8,
+          child: Row(spacing: 8, children: [?hideMap, settingsBtn]),
+        ),
         Positioned(
           right: 16,
           top: 0,
@@ -310,6 +360,32 @@ class _StatusBar extends StatelessWidget {
           status.gpsOk ? l.recGps : l.recGpsNone,
           c: status.gpsOk ? null : cs.error,
         ),
+        if (status.live)
+          chip(
+            status.liveState == 'connected' ? Icons.podcasts : Icons.sync,
+            switch (status.liveState) {
+              'connected' => l.liveOnAir,
+              'reconnecting' => l.liveReconnecting,
+              _ => l.liveConnecting,
+            },
+            c: status.liveState == 'connected'
+                ? Theme.of(context).colorScheme.tertiary
+                : cs.error,
+          ),
+        if (status.live)
+          chip(
+            Icons.speed,
+            l.liveBitrate((status.bitrateKbps / 1000).toStringAsFixed(1)),
+          ),
+        if (status.live && status.droppedFrames > 0)
+          chip(
+            Icons.warning_amber,
+            l.liveDropped(status.droppedFrames),
+            c: cs.error,
+          ),
+        if (status.network != null) chip(Icons.network_check, status.network!),
+        if (status.batteryPct >= 0)
+          chip(Icons.battery_std, '${status.batteryPct}%'),
         if (status.simulation) chip(Icons.science_outlined, l.recSimulation),
         if (status.freeBytes > 0)
           chip(
@@ -364,6 +440,7 @@ class _Warnings extends StatelessWidget {
 
 class _Controls extends StatelessWidget {
   const _Controls({
+    required this.live,
     required this.horizontal,
     required this.status,
     required this.hold,
@@ -371,6 +448,7 @@ class _Controls extends StatelessWidget {
     required this.onPause,
     required this.onResume,
   });
+  final bool live;
   final bool horizontal;
   final CoreStatus status;
   final AnimationController hold;
@@ -381,8 +459,8 @@ class _Controls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final live = Theme.of(context).colorScheme.tertiary;
-    if (!status.recording) {
+    final liveRed = Theme.of(context).colorScheme.tertiary;
+    if (!status.active) {
       return SizedBox(
         width: 96,
         height: 96,
@@ -397,19 +475,21 @@ class _Controls extends StatelessWidget {
       );
     }
     final paused = status.state == 'paused';
+    final showPause = !live;
     final kids = <Widget>[
-      SizedBox(
-        width: 72,
-        height: 72,
-        child: FilledButton.tonal(
-          style: FilledButton.styleFrom(
-            shape: const CircleBorder(),
-            padding: EdgeInsets.zero,
+      if (showPause)
+        SizedBox(
+          width: 72,
+          height: 72,
+          child: FilledButton.tonal(
+            style: FilledButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: EdgeInsets.zero,
+            ),
+            onPressed: paused ? onResume : onPause,
+            child: Icon(paused ? Icons.play_arrow : Icons.pause, size: 36),
           ),
-          onPressed: paused ? onResume : onPause,
-          child: Icon(paused ? Icons.play_arrow : Icons.pause, size: 36),
         ),
-      ),
       Listener(
         onPointerDown: (_) => hold.forward(),
         onPointerUp: (_) => hold.reverse(),
@@ -426,14 +506,14 @@ class _Controls extends StatelessWidget {
                   child: CircularProgressIndicator(
                     value: hold.value,
                     strokeWidth: 6,
-                    color: live,
+                    color: liveRed,
                   ),
                 ),
                 Container(
                   width: 76,
                   height: 76,
                   decoration: BoxDecoration(
-                    color: live,
+                    color: liveRed,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.stop, size: 40, color: Colors.white),

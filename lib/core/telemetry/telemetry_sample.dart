@@ -70,6 +70,11 @@ class CoreStatus {
     this.tempC,
     this.batteryPct = -1,
     this.simulation = false,
+    this.live = false,
+    this.liveState = 'off',
+    this.bitrateKbps = 0,
+    this.droppedFrames = 0,
+    this.network,
     this.error,
   });
 
@@ -81,9 +86,17 @@ class CoreStatus {
   final double? tempC;
   final int batteryPct;
   final bool simulation;
+  final bool live;
+  final String liveState;
+  final int bitrateKbps;
+  final int droppedFrames;
+  final String? network;
   final String? error;
 
   bool get recording => state == 'recording' || state == 'paused';
+
+  /// Gravando e/ou transmitindo (a parada exige segurar o botão).
+  bool get active => recording || live;
 
   factory CoreStatus.fromMap(Map<dynamic, dynamic> m) => CoreStatus(
     state: m['state'] as String? ?? 'idle',

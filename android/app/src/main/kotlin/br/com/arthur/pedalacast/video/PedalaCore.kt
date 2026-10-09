@@ -27,6 +27,7 @@ import com.pedro.encoder.input.sources.video.Camera2Source
 import com.pedro.encoder.input.gl.render.filters.`object`.ImageFilterRender
 import com.pedro.library.base.recording.RecordController
 import com.pedro.library.generic.GenericStream
+import com.pedro.library.util.BitrateAdapter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,6 +48,8 @@ data class VideoConfig(
  * Na Fase 2 o mesmo encoder alimenta o RTMPS.
  */
 object PedalaCore {
+    private const val MIN_LIVE_BITRATE = 1_000_000
+
     enum class State { IDLE, PREVIEW, RECORDING, PAUSED }
 
     private lateinit var app: Context
@@ -64,6 +67,16 @@ object PedalaCore {
     @Volatile var layout: OverlayLayout = OverlayLayout.default()
     private var layoutVersion = 0
     @Volatile var simulation = false
+    @Volatile var liveLabel = "AO VIVO"
+    @Volatile var recLabel = "REC"
+
+    fun setLocale(tag: String?, live: String?, rec: String?, hr: String?) {
+        tag?.let { renderer.locale = java.util.Locale.forLanguageTag(it) }
+        live?.let { liveLabel = it }
+        rec?.let { recLabel = it }
+        hr?.let { renderer.hrLabel = it }
+        layoutVersion++
+    }
 
     @Volatile var state = State.IDLE
         private set
@@ -85,6 +98,79 @@ object PedalaCore {
     var onSample: ((TelemetrySample) -> Unit)? = null
     var lastError: String? = null
         private set
+
+    // ---------------- live (RTMPS) ----------------
+
+    enum class LiveState { OFF, CONNECTING, CONNECTED, RECONNECTING }
+
+    @Volatile var liveState = LiveState.OFF
+        private set
+    private var liveEndpoint: String? = null      // contém a chave: nunca registrar em log
+    private var liveStartMs = 0L
+    private var liveAttempts = 0
+    private var liveStartedRecording = false
+    @Volatile private var realBitrateBps = 0L
+    private var maxLiveBitrate = 0
+    private val adapter = BitrateAdapter { b ->
+        val v = b.coerceIn(MIN_LIVE_BITRATE, maxLiveBitrate.coerceAtLeast(MIN_LIVE_BITRATE))
+        runCatching { stream?.setVideoBitrateOnFly(v) }
+    }
+
+    private val liveChecker = object : ConnectChecker {
+        override fun onConnectionStarted(url: String) {}
+        override fun onConnectionSuccess() { liveAttempts = 0; liveState = LiveState.CONNECTED; main.post { emitStatus() } }
+        override fun onConnectionFailed(reason: String) {
+            if (liveState == LiveState.OFF) return
+            liveState = LiveState.RECONNECTING
+            liveAttempts++
+            val delay = (1000L shl liveAttempts.coerceAtMost(5)).coerceAtMost(30_000L)   // 2,4,8,16,30 s
+            main.post {
+                // A gravação local não depende da rede e segue normalmente.
+                val ok = runCatching { stream?.getStreamClient()?.reTry(delay, reason) ?: false }.getOrDefault(false)
+                if (!ok) liveState = LiveState.RECONNECTING
+                emitStatus()
+            }
+        }
+        override fun onDisconnect() { if (liveState != LiveState.OFF) liveState = LiveState.RECONNECTING }
+        override fun onAuthError() { lastError = "Falha de autenticação no YouTube (confira a chave)"; }
+        override fun onAuthSuccess() {}
+        override fun onNewBitrate(bitrate: Long) {
+            realBitrateBps = bitrate
+            val client = stream?.getStreamClient() ?: return
+            adapter.adaptBitrate(bitrate, client.hasCongestion())
+        }
+    }
+
+    /** [endpoint] = URL de ingestão + "/" + chave. [recordLocal]: grava MP4 com o mesmo encoder. */
+    fun startLive(endpoint: String, maxBitrate: Int, recordLocal: Boolean): Result<Unit> = runCatching {
+        val s = stream ?: error("Preview não iniciado")
+        check(liveState == LiveState.OFF) { "Já está transmitindo" }
+        require(endpoint.startsWith("rtmps://") || endpoint.startsWith("rtmp://")) { "URL inválida" }
+        liveStartedRecording = false
+        if (recordLocal && state == State.PREVIEW) {
+            startRecording().getOrThrow()
+            liveStartedRecording = true
+        }
+        maxLiveBitrate = maxBitrate
+        adapter.setMaxBitrate(maxBitrate)
+        liveEndpoint = endpoint
+        liveAttempts = 0
+        liveStartMs = SystemClock.elapsedRealtime()
+        liveState = LiveState.CONNECTING
+        s.getStreamClient().setReTries(1000)
+        s.startStream(endpoint)
+        emitStatus()
+    }.onFailure { lastError = it.message; liveState = LiveState.OFF }
+
+    fun stopLive() {
+        if (liveState == LiveState.OFF) return
+        liveState = LiveState.OFF
+        liveEndpoint = null
+        runCatching { stream?.stopStream() }
+        if (liveStartedRecording) { stopRecording(); liveStartedRecording = false }
+        realBitrateBps = 0
+        emitStatus()
+    }
 
     fun init(context: Context) {
         if (::app.isInitialized) return
@@ -118,14 +204,7 @@ object PedalaCore {
         if (state != State.IDLE) return@runCatching
         config = cfg
         val audio: AudioSource = if (cfg.micEnabled) MicrophoneSource() else NoAudioSource()
-        val s = GenericStream(app, object : ConnectChecker {
-            override fun onConnectionStarted(url: String) {}
-            override fun onConnectionSuccess() {}
-            override fun onConnectionFailed(reason: String) {}
-            override fun onDisconnect() {}
-            override fun onAuthError() {}
-            override fun onAuthSuccess() {}
-        }, Camera2Source(app), audio)
+        val s = GenericStream(app, liveChecker, Camera2Source(app), audio)
         if (!s.prepareVideo(cfg.width, cfg.height, cfg.bitrate, cfg.fps, 2, if (cfg.portrait) 90 else 0)) error("Câmera/encoder não suportam ${cfg.width}x${cfg.height}")
         if (!s.prepareAudio(44100, true, 128_000)) error("Falha ao preparar o áudio")
         val f = ImageFilterRender().apply { setScale(100f, 100f); setPosition(0f, 0f) }
@@ -141,7 +220,7 @@ object PedalaCore {
     }.onFailure { lastError = it.message; releaseStream() }
 
     fun stopPreview() {
-        if (state == State.RECORDING || state == State.PAUSED) return
+        if (state == State.RECORDING || state == State.PAUSED || liveState != LiveState.OFF) return
         releaseStream()
         engine.stop()
         state = State.IDLE
@@ -206,7 +285,9 @@ object PedalaCore {
         return video?.uri?.toString()
     }
 
-    fun elapsedMs(): Long = when (state) {
+    fun elapsedMs(): Long = if (liveState != LiveState.OFF && state == State.PREVIEW) {
+        SystemClock.elapsedRealtime() - liveStartMs
+    } else when (state) {
         State.RECORDING -> SystemClock.elapsedRealtime() - recordStartMs - pausedAccumMs
         State.PAUSED -> pauseStartMs - recordStartMs - pausedAccumMs
         else -> 0
@@ -251,13 +332,17 @@ object PedalaCore {
         val bms = bitmaps ?: return
         val sample = engine.processor.last
         val elapsed = elapsedMs()
-        val sig = "${sample?.tMs}|${elapsed / 1000}|$layoutVersion|$state|${clockText()}"
+        val sig = "${sample?.tMs}|${elapsed / 1000}|$layoutVersion|$state|$liveState|${clockText()}"
         if (sig == lastSig) return          // só envia nova textura à GPU quando algo mudou
         lastSig = sig
         val track = engine.processor.trackSnapshot()
         val first = track.firstOrNull()
         val pz = if (first != null && layout.privacyRadiusM > 0) PrivacyZone(first.lat, first.lon, layout.privacyRadiusM) else null
-        val badge = when (state) { State.RECORDING, State.PAUSED -> "REC"; else -> null }
+        val badge = when {
+            liveState != LiveState.OFF -> liveLabel
+            state == State.RECORDING || state == State.PAUSED -> recLabel
+            else -> null
+        }
         val bm = bms[bmIdx]
         bmIdx = 1 - bmIdx
         renderer.render(bm, layout, OverlayState(sample, track, planned, badge, elapsed, pz, clockText()))
@@ -266,7 +351,7 @@ object PedalaCore {
 
     @Volatile var planned: List<br.com.arthur.pedalacast.overlay.LatLon>? = null
 
-    private fun clockText() = SimpleDateFormat("HH:mm", Locale("pt", "BR")).format(Date())
+    private fun clockText() = SimpleDateFormat("HH:mm", renderer.locale).format(Date())
 
     /** Salva um PNG do overlay sobre uma imagem estática com dados fixos (tela de debug). */
     fun renderDebugPng(layoutJson: String?, w: Int = 1280, h: Int = 720): String {
@@ -289,7 +374,7 @@ object PedalaCore {
             speedMps = 7.2, altitudeM = track.last().altM, gradePct = 6.5, distanceM = 2000.0, ascentM = 182.0,
             hrBpm = 148, cadenceRpm = 86, powerW = 210, batteryPct = 72, signalLevel = 3, networkType = "Móvel",
         )
-        renderer.render(ov, lay, OverlayState(sample, track, null, "REC", 754_000, null, "08:42"))
+        renderer.render(ov, lay, OverlayState(sample, track, null, recLabel, 754_000, null, "08:42"))
         c.drawBitmap(ov, 0f, 0f, null)
         val (uri, out) = Storage.createImage(app, "overlay_debug_" + System.currentTimeMillis() + ".png")
         out.use { bg.compress(Bitmap.CompressFormat.PNG, 100, it) }
@@ -311,6 +396,11 @@ object PedalaCore {
                 "tempC" to ph.tempC,
                 "batteryPct" to b.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY),
                 "simulation" to simulation,
+                "live" to (liveState != LiveState.OFF),
+                "liveState" to liveState.name.lowercase(),
+                "bitrateKbps" to realBitrateBps / 1000,
+                "droppedFrames" to (stream?.getStreamClient()?.getDroppedVideoFrames() ?: 0L),
+                "network" to ph.networkType,
                 "error" to lastError,
             )
         )
@@ -320,7 +410,7 @@ object PedalaCore {
     fun tick() {
         if ((state == State.RECORDING || state == State.PAUSED) && Storage.freeBytes() < 100L * 1024 * 1024) {
             lastError = "Espaço acabando: gravação encerrada com segurança"
-            stopRecording()
+            stopRecording()   // a live continua; só a cópia local para
         }
         emitStatus()
     }

@@ -36,7 +36,10 @@ data class OverlayState(
  * e não deixa buraco no layout. Visual definido só aqui (Kotlin).
  */
 class OverlayRenderer(private val palette: BrandPalette) {
-    private val ptBr = Locale("pt", "BR")
+    /** Idioma e rótulos vêm do app (Flutter), para o overlay seguir o idioma escolhido. */
+    @Volatile var locale: Locale = Locale("pt", "BR")
+    @Volatile var hrLabel: String = "FC"
+    private val ptBr get() = locale
     private val p = Paint(Paint.ANTI_ALIAS_FLAG)
     private val bold = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
 
@@ -96,7 +99,7 @@ class OverlayRenderer(private val palette: BrandPalette) {
             val u = u0 * liveSpec.sizePreset.factor
             x += drawLiveBadge(c, x, m, u, st.badge, st.elapsedMs) + 8f * u
         }
-        for ((type, label) in listOf("hr" to "FC", "cadence" to "RPM", "power" to "W")) {
+        for ((type, label) in listOf("hr" to hrLabel, "cadence" to "RPM", "power" to "W")) {
             val spec = layout.block(type) ?: continue
             val v = when (type) { "hr" -> s?.hrBpm; "cadence" -> s?.cadenceRpm; else -> s?.powerW } ?: continue
             val u = u0 * spec.sizePreset.factor

@@ -144,5 +144,43 @@
   "setOrientation": "Orientação do vídeo",
   "setLandscape": "Horizontal",
   "setPortrait": "Vertical",
-  "recSettings": "Ajustes"
+  "recSettings": "Ajustes",
+  "homeLive": "Transmitir ao vivo (YouTube)",
+  "liveTitle": "Live no YouTube",
+  "liveHelp": "No YouTube Studio, crie uma transmissão ao vivo e copie a URL do servidor e a chave de transmissão. Cole abaixo.",
+  "liveUrl": "URL do servidor (RTMPS)",
+  "liveKey": "Chave de transmissão",
+  "liveKeyHint": "A chave fica guardada criptografada neste aparelho e nunca é exibida nem registrada. Não a compartilhe.",
+  "liveBadUrl": "Use uma URL que comece com rtmps://",
+  "liveNoKey": "Cole a chave de transmissão do YouTube.",
+  "liveQuality": "Qualidade",
+  "live720": "720p (até 4 Mbps)",
+  "live1080": "1080p (até 6 Mbps)",
+  "liveRecordLocal": "Gravar uma cópia no celular",
+  "liveRecordLocalHint": "Usa o mesmo vídeo da transmissão (com overlay) e continua se a rede cair.",
+  "liveHideMap": "Ocultar mini-mapa",
+  "liveGo": "Ir ao vivo",
+  "liveTip": "Teste primeiro com a transmissão \"Não listada\" no YouTube Studio. O bitrate se ajusta sozinho à sua rede.",
+  "liveOnAir": "AO VIVO",
+  "liveConnecting": "Conectando…",
+  "liveReconnecting": "Reconectando…",
+  "liveBitrate": "{mbps} Mbps",
+  "@liveBitrate": {
+    "placeholders": {
+      "mbps": {
+        "type": "String"
+      }
+    }
+  },
+  "liveDropped": "{n} quadros perdidos",
+  "@liveDropped": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ovLiveLabel": "AO VIVO",
+  "ovHrLabel": "FC",
+  "ovRecLabel": "REC"
 }

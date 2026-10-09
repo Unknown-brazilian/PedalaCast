@@ -18,6 +18,9 @@ class AppSettings {
     this.disabled = const {'phone_status'},
     this.minimapFullTrack = false,
     this.safetyAccepted = false,
+    this.liveHeight = 720,
+    this.liveRecordLocal = true,
+    this.hideMinimap = false,
   });
 
   final int height; // 1080 ou 720
@@ -32,8 +35,14 @@ class AppSettings {
   final Set<String> disabled;
   final bool minimapFullTrack;
   final bool safetyAccepted;
+  final int liveHeight; // 720 ou 1080
+  final bool liveRecordLocal;
+  final bool hideMinimap;
 
   int get width => height == 1080 ? 1920 : 1280;
+  int get liveWidth => liveHeight == 1080 ? 1920 : 1280;
+  // 720p: 1,5–4 Mbps; 1080p: 3–6 Mbps (faixas iniciais; o bitrate adapta à rede)
+  int get liveBitrate => liveHeight == 1080 ? 6000000 : 4000000;
   int get bitrate => height == 1080 ? 12000000 : 6000000;
 
   static const blockTypes = [
@@ -77,6 +86,9 @@ class AppSettings {
     Set<String>? disabled,
     bool? minimapFullTrack,
     bool? safetyAccepted,
+    int? liveHeight,
+    bool? liveRecordLocal,
+    bool? hideMinimap,
   }) => AppSettings(
     height: height ?? this.height,
     portrait: portrait ?? this.portrait,
@@ -117,6 +129,9 @@ class SettingsNotifier extends Notifier<AppSettings> {
       disabled: (p.getStringList('disabled') ?? const ['phone_status']).toSet(),
       minimapFullTrack: p.getBool('minimapFullTrack') ?? false,
       safetyAccepted: p.getBool('safetyAccepted') ?? false,
+      liveHeight: p.getInt('liveHeight') ?? 720,
+      liveRecordLocal: p.getBool('liveRecordLocal') ?? true,
+      hideMinimap: p.getBool('hideMinimap') ?? false,
     );
   }
 
@@ -135,6 +150,9 @@ class SettingsNotifier extends Notifier<AppSettings> {
     await p.setStringList('disabled', s.disabled.toList());
     await p.setBool('minimapFullTrack', s.minimapFullTrack);
     await p.setBool('safetyAccepted', s.safetyAccepted);
+    await p.setInt('liveHeight', s.liveHeight);
+    await p.setBool('liveRecordLocal', s.liveRecordLocal);
+    await p.setBool('hideMinimap', s.hideMinimap);
   }
 }
 

@@ -346,4 +346,84 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get recSettings => 'Ajustes';
+
+  @override
+  String get homeLive => 'Transmitir ao vivo (YouTube)';
+
+  @override
+  String get liveTitle => 'Live no YouTube';
+
+  @override
+  String get liveHelp =>
+      'No YouTube Studio, crie uma transmissão ao vivo e copie a URL do servidor e a chave de transmissão. Cole abaixo.';
+
+  @override
+  String get liveUrl => 'URL do servidor (RTMPS)';
+
+  @override
+  String get liveKey => 'Chave de transmissão';
+
+  @override
+  String get liveKeyHint =>
+      'A chave fica guardada criptografada neste aparelho e nunca é exibida nem registrada. Não a compartilhe.';
+
+  @override
+  String get liveBadUrl => 'Use uma URL que comece com rtmps://';
+
+  @override
+  String get liveNoKey => 'Cole a chave de transmissão do YouTube.';
+
+  @override
+  String get liveQuality => 'Qualidade';
+
+  @override
+  String get live720 => '720p (até 4 Mbps)';
+
+  @override
+  String get live1080 => '1080p (até 6 Mbps)';
+
+  @override
+  String get liveRecordLocal => 'Gravar uma cópia no celular';
+
+  @override
+  String get liveRecordLocalHint =>
+      'Usa o mesmo vídeo da transmissão (com overlay) e continua se a rede cair.';
+
+  @override
+  String get liveHideMap => 'Ocultar mini-mapa';
+
+  @override
+  String get liveGo => 'Ir ao vivo';
+
+  @override
+  String get liveTip =>
+      'Teste primeiro com a transmissão \"Não listada\" no YouTube Studio. O bitrate se ajusta sozinho à sua rede.';
+
+  @override
+  String get liveOnAir => 'AO VIVO';
+
+  @override
+  String get liveConnecting => 'Conectando…';
+
+  @override
+  String get liveReconnecting => 'Reconectando…';
+
+  @override
+  String liveBitrate(String mbps) {
+    return '$mbps Mbps';
+  }
+
+  @override
+  String liveDropped(int n) {
+    return '$n quadros perdidos';
+  }
+
+  @override
+  String get ovLiveLabel => 'AO VIVO';
+
+  @override
+  String get ovHrLabel => 'FC';
+
+  @override
+  String get ovRecLabel => 'REC';
 }

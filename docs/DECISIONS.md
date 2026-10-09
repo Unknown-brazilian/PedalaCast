@@ -36,3 +36,15 @@ Riverpod; configurações em `shared_preferences`. Telas pt-BR em ARB (`nullable
 
 ## Orientação do vídeo (v0.1.2)
 Ajuste "Horizontal/Vertical". Vertical usa `rotation=90` no `prepareVideo` (RootEncoder troca largura/altura do encoder); o bitmap do overlay e o preview usam o tamanho final do quadro. A escala do overlay passa a usar o lado menor/720, então os blocos têm o mesmo tamanho nas duas orientações. A tela de gravação trava na orientação escolhida. **Não testado em aparelho**: conferir se o preview e o vídeo saem na posição certa em retrato.
+
+## Live no YouTube (v0.2.0, Fase 2 parcial)
+- RTMPS pelo mesmo `GenericStream` (um encoder serve transmissão e gravação local com overlay). Consequência: o bitrate adaptativo também afeta o MP4 gravado durante a live.
+- Chave manual (padrão): URL + chave em `flutter_secure_storage`, campo mascarado, nunca em log (o `ConnectChecker` ignora a URL). A chave só é lida na hora de ir ao vivo.
+- Qualidade da live: 720p até 4 Mbps ou 1080p até 6 Mbps; keyframe a cada 2 s; áudio AAC 128 kbps. Bitrate adaptativo com `BitrateAdapter` (mínimo 1 Mbps) usando a congestão da fila de envio.
+- Reconexão: falha/queda → `reTry` com espera crescente (2, 4, 8, 16, 30 s, até 1000 tentativas). A gravação local não depende da rede.
+- Parar exige segurar o botão (para live e cópia local juntas). Ocultar mini-mapa por interruptor; zona de privacidade vale para live e gravação.
+- **Não feito ainda:** criação automática da transmissão pela API do YouTube (login Google, escopo verificado), cópia limpa com segundo encoder, aviso/redução automática de qualidade por calor.
+- **Não testado** contra servidor local (MediaMTX) nem contra o YouTube.
+
+## Idiomas (v0.2.0)
+pt (padrão do projeto), en, es, fr via ARB. Fora desses, cai em inglês. O overlay é desenhado no Kotlin: idioma (formato de números) e rótulos (AO VIVO/LIVE/EN VIVO/EN DIRECT, FC/HR) são enviados pelo Flutter ao iniciar o preview. Textos da notificação em `res/values*/strings.xml`. Mensagens de erro vindas do Kotlin ainda estão em português.

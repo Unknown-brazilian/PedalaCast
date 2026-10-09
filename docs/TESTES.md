@@ -34,3 +34,13 @@ Marque ao executar. Nada abaixo foi executado ainda.
 ## Orientação vertical e botão de ajustes (v0.1.2)
 - [ ] Ajustes > Orientação > Vertical: preview em retrato, vídeo gravado em retrato e na posição certa, overlay legível (perfil de elevação estreito).
 - [ ] Botão de ajustes na tela de gravação: abre sem parar a gravação; mudar resolução/orientação/microfone fora da gravação reinicia o preview.
+
+## Live no YouTube (v0.2.0)
+- [ ] Contra MediaMTX local (`rtmp://IP:1935/live`) na mesma rede Wi-Fi: vídeo com overlay chega; selo AO VIVO.
+- [ ] YouTube Studio, transmissão "Não listada": chave colada aparece mascarada; live inicia e o preview do Studio mostra o overlay.
+- [ ] Derrubar o Wi-Fi/dados por alguns minutos: estado "Reconectando…", volta sozinho; a cópia local segue gravando.
+- [ ] Trocar Wi-Fi ↔ 4G durante a live.
+- [ ] Rede lenta: bitrate real cai e quadros perdidos sobem; sem travar o app.
+- [ ] Parar exige segurar; MP4 local abre depois.
+- [ ] Ocultar mini-mapa durante a live; chave nunca aparece em `adb logcat`.
+- [ ] Idiomas: trocar o idioma do sistema para en/es/fr e conferir telas, notificação e rótulos do overlay.

@@ -27,6 +27,7 @@ class CoreChannel {
     required bool autoPause,
     required bool simulation,
     required String layout,
+    required Map<String, String> labels,
   }) async => (await _control.invokeMethod<int>('startPreview', {
     'width': width,
     'height': height,
@@ -43,6 +44,16 @@ class CoreChannel {
   Future<void> startRecording() => _control.invokeMethod('startRecording');
   Future<String?> stopRecording() =>
       _control.invokeMethod<String>('stopRecording');
+  Future<void> startLive({
+    required String endpoint,
+    required int maxBitrate,
+    required bool recordLocal,
+  }) => _control.invokeMethod('startLive', {
+    'endpoint': endpoint,
+    'maxBitrate': maxBitrate,
+    'recordLocal': recordLocal,
+  });
+  Future<void> stopLive() => _control.invokeMethod('stopLive');
   Future<void> pauseRecording() => _control.invokeMethod('pauseRecording');
   Future<void> resumeRecording() => _control.invokeMethod('resumeRecording');
   Future<void> setLayout(String json) =>

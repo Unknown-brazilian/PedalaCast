@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.PowerManager
 import br.com.arthur.pedalacast.MainActivity
+import br.com.arthur.pedalacast.R
 
 /** Serviço em primeiro plano que mantém câmera, GPS e microfone vivos com a tela bloqueada. */
 class RecordingService : Service() {
@@ -25,22 +26,23 @@ class RecordingService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_STOP) {
+            PedalaCore.stopLive()
             PedalaCore.stopRecording()
             stopSelf()
             return START_NOT_STICKY
         }
         val nm = getSystemService(NotificationManager::class.java)
-        nm.createNotificationChannel(NotificationChannel(CH, "Gravação", NotificationManager.IMPORTANCE_LOW))
+        nm.createNotificationChannel(NotificationChannel(CH, getString(R.string.notif_channel), NotificationManager.IMPORTANCE_LOW))
         val open = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
         val stop = PendingIntent.getService(
             this, 1, Intent(this, RecordingService::class.java).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE,
         )
         val n: Notification = Notification.Builder(this, CH)
-            .setContentTitle("PedalaCast gravando")
-            .setContentText("Toque para abrir")
+            .setContentTitle(getString(R.string.notif_title))
+            .setContentText(getString(R.string.notif_text))
             .setSmallIcon(android.R.drawable.ic_menu_camera)
             .setContentIntent(open)
-            .addAction(Notification.Action.Builder(null, "Parar", stop).build())
+            .addAction(Notification.Action.Builder(null, getString(R.string.notif_stop), stop).build())
             .setOngoing(true)
             .build()
         startForeground(

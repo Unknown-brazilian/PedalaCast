@@ -66,6 +66,7 @@ class Channels(private val activity: Activity, engine: FlutterEngine) {
                     micEnabled = (a["mic"] as? Boolean) ?: true, autoPause = (a["autoPause"] as? Boolean) ?: false,
                 )
                 PedalaCore.simulation = (a["simulation"] as? Boolean) ?: false
+                PedalaCore.setLocale(a["locale"] as? String, a["liveLabel"] as? String, a["recLabel"] as? String, a["hrLabel"] as? String)
                 PedalaCore.setLayout(a["layout"] as? String)
                 releaseTexture()
                 val e = textures.createSurfaceTexture()
@@ -91,6 +92,22 @@ class Channels(private val activity: Activity, engine: FlutterEngine) {
                 activity.stopService(Intent(activity, RecordingService::class.java))
                 result.success(uri)
             }
+            "startLive" -> {
+                ContextCompat.startForegroundService(activity, Intent(activity, RecordingService::class.java))
+                PedalaCore.startLive(
+                    endpoint = a["endpoint"] as String,
+                    maxBitrate = (a["maxBitrate"] as? Int) ?: 4_000_000,
+                    recordLocal = (a["recordLocal"] as? Boolean) ?: true,
+                ).onSuccess { result.success(null) }.onFailure {
+                    activity.stopService(Intent(activity, RecordingService::class.java))
+                    result.error("live", it.message, null)
+                }
+            }
+            "stopLive" -> {
+                PedalaCore.stopLive()
+                activity.stopService(Intent(activity, RecordingService::class.java))
+                result.success(null)
+            }
             "pauseRecording" -> { PedalaCore.pauseRecording(); result.success(null) }
             "resumeRecording" -> { PedalaCore.resumeRecording(); result.success(null) }
             "setLayout" -> { PedalaCore.setLayout(a["layout"] as? String); result.success(null) }
@@ -106,6 +123,7 @@ class Channels(private val activity: Activity, engine: FlutterEngine) {
                 result.success(null)
             }
             "renderDebugPng" -> Thread {
+                PedalaCore.setLocale(a["locale"] as? String, a["liveLabel"] as? String, a["recLabel"] as? String, a["hrLabel"] as? String)
                 runCatching { PedalaCore.renderDebugPng(a["layout"] as? String) }
                     .onSuccess { main.post { result.success(it) } }
                     .onFailure { main.post { result.error("debug", it.message, null) } }

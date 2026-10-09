@@ -1,0 +1,186 @@
+{
+  "@@locale": "en",
+  "appName": "PedalaCast",
+  "recordTitle": "Record",
+  "aboutTitle": "About",
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutAuthor": "Author",
+  "aboutSendFeedback": "Send feedback",
+  "aboutSupportTitle": "Support the project",
+  "aboutSupportText": "PedalaCast is free. If it was useful to you, you can support it with Bitcoin over the Lightning network.",
+  "aboutLightningNote": "This is a Lightning address (email-like format), not an on-chain address. Sending on-chain will not work.",
+  "aboutDonationDisclaimer": "Voluntary donation. It does not unlock features or give any advantage.",
+  "aboutCopy": "Copy",
+  "aboutCopied": "Address copied",
+  "aboutOpenWallet": "Open in wallet",
+  "aboutNoWallet": "No Lightning wallet app found.",
+  "aboutLegal": "Legal",
+  "aboutPrivacyPolicy": "Privacy policy",
+  "aboutLicenses": "Open source licenses",
+  "aboutSafetyTitle": "Safety notice",
+  "aboutSafetyText": "Do not handle your phone while moving. Use a firm mount and respect traffic.",
+  "homeStart": "Start ride",
+  "homeLibrary": "Recordings",
+  "homeLayout": "Overlay layout",
+  "homeSettings": "Settings",
+  "homeDebug": "Overlay debug",
+  "homeAbout": "About",
+  "permTitle": "Permissions needed",
+  "permIntro": "To record your ride with the overlay, PedalaCast needs:",
+  "permCamera": "Camera: to film your ride.",
+  "permMic": "Microphone: to record the ride sound.",
+  "permLocation": "Precise location: for speed, distance, route and altitude.",
+  "permNotif": "Notifications: to show that recording is active.",
+  "permGrant": "Grant permissions",
+  "permDenied": "Some permissions were denied. Open system settings to grant them.",
+  "permOpenSettings": "Open settings",
+  "safetyTitle": "Before you ride",
+  "safetyBody": "Do not handle your phone while moving. Use a firm bike mount and respect traffic. To stop recording, hold the button.",
+  "safetyAccept": "Got it",
+  "recGps": "GPS",
+  "recGpsNone": "No GPS",
+  "recFree": "{gb} GB free",
+  "@recFree": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "recTemp": "{c} °C",
+  "@recTemp": {
+    "placeholders": {
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "recHoldToStop": "Hold to stop",
+  "recStart": "Start",
+  "recPause": "Pause",
+  "recResume": "Resume",
+  "recSaved": "Recording saved",
+  "recNoBaro": "No barometer: grade and climb are less reliable.",
+  "recHot": "Phone is hot. Consider lowering the quality.",
+  "recLowBattery": "Low battery.",
+  "recSimulation": "Simulation",
+  "recStarting": "Starting camera…",
+  "recError": "Error: {msg}",
+  "@recError": {
+    "placeholders": {
+      "msg": {
+        "type": "String"
+      }
+    }
+  },
+  "libEmpty": "No recordings yet.",
+  "libOpen": "Open",
+  "libShare": "Share",
+  "libDelete": "Delete",
+  "libDeleteConfirm": "Delete this recording?",
+  "libCancel": "Cancel",
+  "libDeleteDo": "Delete",
+  "libNote": "Videos are in Movies/PedalaCast; GPX and JSON files in Documents/PedalaCast.",
+  "layoutTitle": "Overlay layout",
+  "layoutSize": "Size",
+  "layoutSmall": "Small",
+  "layoutMedium": "Medium",
+  "layoutLarge": "Large",
+  "layoutBlocks": "Blocks",
+  "layoutPhone": "Phone",
+  "layoutNoDevice": "No device",
+  "layoutNoDeviceHint": "Connect a Bluetooth sensor to show this data (coming soon).",
+  "layoutFullTrack": "Show full route on the mini-map",
+  "blk_speed_gauge": "Speedometer",
+  "blk_distance_climb": "Distance and climb",
+  "blk_minimap": "Mini-map",
+  "blk_elevation_profile": "Elevation profile",
+  "blk_grade_badge": "Grade badge",
+  "blk_hr": "Heart rate",
+  "blk_cadence": "Cadence",
+  "blk_power": "Power",
+  "blk_phone_status": "Phone status bar",
+  "blk_live_badge": "REC / LIVE badge",
+  "setTitle": "Settings",
+  "setResolution": "Resolution",
+  "set1080": "1080p (30 fps)",
+  "set720": "720p (30 fps)",
+  "setKeepScreen": "Keep screen on",
+  "setMic": "Record microphone",
+  "setAutoPause": "Auto-pause (when stopped)",
+  "setPrivacy": "Privacy zone: {m} m",
+  "@setPrivacy": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "setPrivacyHint": "The route is not drawn on the mini-map within this radius of the starting point.",
+  "setSimulation": "Simulation mode",
+  "setSimulationHint": "Plays a sample route as if it were live GPS, to test the overlay without riding.",
+  "dbgTitle": "Overlay debug",
+  "dbgBody": "Renders the overlay over a static image with fixed data and saves a PNG in Pictures/PedalaCast.",
+  "dbgRender": "Generate PNG",
+  "dbgSaved": "PNG saved: {uri}",
+  "@dbgSaved": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  },
+  "bgTitle": "Prevent the system from stopping the recording",
+  "bgBody": "On phones such as Xiaomi, Redmi and POCO (HyperOS/MIUI), the system may close the app in the background and lose the video. Before riding: allow autostart and set PedalaCast battery to \"No restrictions\".",
+  "bgAutostart": "Autostart",
+  "bgBattery": "Battery",
+  "setOrientation": "Video orientation",
+  "setLandscape": "Landscape",
+  "setPortrait": "Portrait",
+  "recSettings": "Settings",
+  "homeLive": "Go live (YouTube)",
+  "liveTitle": "YouTube Live",
+  "liveHelp": "In YouTube Studio, create a live stream and copy the server URL and the stream key. Paste them below.",
+  "liveUrl": "Server URL (RTMPS)",
+  "liveKey": "Stream key",
+  "liveKeyHint": "The key is stored encrypted on this device and is never shown or logged. Do not share it.",
+  "liveBadUrl": "Use a URL starting with rtmps://",
+  "liveNoKey": "Paste the YouTube stream key.",
+  "liveQuality": "Quality",
+  "live720": "720p (up to 4 Mbps)",
+  "live1080": "1080p (up to 6 Mbps)",
+  "liveRecordLocal": "Record a copy on the phone",
+  "liveRecordLocalHint": "Uses the same video as the stream (with overlay) and keeps going if the network drops.",
+  "liveHideMap": "Hide mini-map",
+  "liveGo": "Go live",
+  "liveTip": "Test first with an \"Unlisted\" stream in YouTube Studio. The bitrate adapts to your network automatically.",
+  "liveOnAir": "LIVE",
+  "liveConnecting": "Connecting…",
+  "liveReconnecting": "Reconnecting…",
+  "liveBitrate": "{mbps} Mbps",
+  "@liveBitrate": {
+    "placeholders": {
+      "mbps": {
+        "type": "String"
+      }
+    }
+  },
+  "liveDropped": "{n} dropped frames",
+  "@liveDropped": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ovLiveLabel": "LIVE",
+  "ovHrLabel": "HR",
+  "ovRecLabel": "REC"
+}

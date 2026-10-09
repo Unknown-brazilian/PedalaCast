@@ -5,6 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
 import 'app_localizations_pt.dart';
 
 // ignore_for_file: type=lint
@@ -92,7 +95,12 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('pt')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('es'),
+    Locale('fr'),
+    Locale('pt'),
+  ];
 
   /// No description provided for @appName.
   ///
@@ -711,6 +719,150 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Ajustes'**
   String get recSettings;
+
+  /// No description provided for @homeLive.
+  ///
+  /// In pt, this message translates to:
+  /// **'Transmitir ao vivo (YouTube)'**
+  String get homeLive;
+
+  /// No description provided for @liveTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Live no YouTube'**
+  String get liveTitle;
+
+  /// No description provided for @liveHelp.
+  ///
+  /// In pt, this message translates to:
+  /// **'No YouTube Studio, crie uma transmissão ao vivo e copie a URL do servidor e a chave de transmissão. Cole abaixo.'**
+  String get liveHelp;
+
+  /// No description provided for @liveUrl.
+  ///
+  /// In pt, this message translates to:
+  /// **'URL do servidor (RTMPS)'**
+  String get liveUrl;
+
+  /// No description provided for @liveKey.
+  ///
+  /// In pt, this message translates to:
+  /// **'Chave de transmissão'**
+  String get liveKey;
+
+  /// No description provided for @liveKeyHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'A chave fica guardada criptografada neste aparelho e nunca é exibida nem registrada. Não a compartilhe.'**
+  String get liveKeyHint;
+
+  /// No description provided for @liveBadUrl.
+  ///
+  /// In pt, this message translates to:
+  /// **'Use uma URL que comece com rtmps://'**
+  String get liveBadUrl;
+
+  /// No description provided for @liveNoKey.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cole a chave de transmissão do YouTube.'**
+  String get liveNoKey;
+
+  /// No description provided for @liveQuality.
+  ///
+  /// In pt, this message translates to:
+  /// **'Qualidade'**
+  String get liveQuality;
+
+  /// No description provided for @live720.
+  ///
+  /// In pt, this message translates to:
+  /// **'720p (até 4 Mbps)'**
+  String get live720;
+
+  /// No description provided for @live1080.
+  ///
+  /// In pt, this message translates to:
+  /// **'1080p (até 6 Mbps)'**
+  String get live1080;
+
+  /// No description provided for @liveRecordLocal.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gravar uma cópia no celular'**
+  String get liveRecordLocal;
+
+  /// No description provided for @liveRecordLocalHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usa o mesmo vídeo da transmissão (com overlay) e continua se a rede cair.'**
+  String get liveRecordLocalHint;
+
+  /// No description provided for @liveHideMap.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocultar mini-mapa'**
+  String get liveHideMap;
+
+  /// No description provided for @liveGo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ir ao vivo'**
+  String get liveGo;
+
+  /// No description provided for @liveTip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Teste primeiro com a transmissão \"Não listada\" no YouTube Studio. O bitrate se ajusta sozinho à sua rede.'**
+  String get liveTip;
+
+  /// No description provided for @liveOnAir.
+  ///
+  /// In pt, this message translates to:
+  /// **'AO VIVO'**
+  String get liveOnAir;
+
+  /// No description provided for @liveConnecting.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conectando…'**
+  String get liveConnecting;
+
+  /// No description provided for @liveReconnecting.
+  ///
+  /// In pt, this message translates to:
+  /// **'Reconectando…'**
+  String get liveReconnecting;
+
+  /// No description provided for @liveBitrate.
+  ///
+  /// In pt, this message translates to:
+  /// **'{mbps} Mbps'**
+  String liveBitrate(String mbps);
+
+  /// No description provided for @liveDropped.
+  ///
+  /// In pt, this message translates to:
+  /// **'{n} quadros perdidos'**
+  String liveDropped(int n);
+
+  /// No description provided for @ovLiveLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'AO VIVO'**
+  String get ovLiveLabel;
+
+  /// No description provided for @ovHrLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'FC'**
+  String get ovHrLabel;
+
+  /// No description provided for @ovRecLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'REC'**
+  String get ovRecLabel;
 }
 
 class _AppLocalizationsDelegate
@@ -724,7 +876,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['pt'].contains(locale.languageCode);
+      <String>['en', 'es', 'fr', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -733,6 +885,12 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
     case 'pt':
       return AppLocalizationsPt();
   }

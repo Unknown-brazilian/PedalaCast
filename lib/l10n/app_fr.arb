@@ -1,0 +1,186 @@
+{
+  "@@locale": "fr",
+  "appName": "PedalaCast",
+  "recordTitle": "Enregistrer",
+  "aboutTitle": "À propos",
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutAuthor": "Auteur",
+  "aboutSendFeedback": "Envoyer un retour",
+  "aboutSupportTitle": "Soutenir le projet",
+  "aboutSupportText": "PedalaCast est gratuit. S'il vous a été utile, vous pouvez le soutenir avec du Bitcoin via le réseau Lightning.",
+  "aboutLightningNote": "Il s'agit d'une adresse Lightning (format proche d'un e-mail), pas d'une adresse on-chain. Un envoi on-chain ne fonctionne pas.",
+  "aboutDonationDisclaimer": "Don volontaire. Il ne débloque aucune fonction et n'apporte aucun avantage.",
+  "aboutCopy": "Copier",
+  "aboutCopied": "Adresse copiée",
+  "aboutOpenWallet": "Ouvrir dans le portefeuille",
+  "aboutNoWallet": "Aucune application de portefeuille Lightning trouvée.",
+  "aboutLegal": "Mentions légales",
+  "aboutPrivacyPolicy": "Politique de confidentialité",
+  "aboutLicenses": "Licences open source",
+  "aboutSafetyTitle": "Avertissement de sécurité",
+  "aboutSafetyText": "Ne manipulez pas votre téléphone en roulant. Utilisez un support solide et respectez la circulation.",
+  "homeStart": "Démarrer la sortie",
+  "homeLibrary": "Enregistrements",
+  "homeLayout": "Disposition de l'overlay",
+  "homeSettings": "Réglages",
+  "homeDebug": "Débogage de l'overlay",
+  "homeAbout": "À propos",
+  "permTitle": "Autorisations nécessaires",
+  "permIntro": "Pour enregistrer votre sortie avec l'overlay, PedalaCast a besoin de :",
+  "permCamera": "Caméra : pour filmer la sortie.",
+  "permMic": "Microphone : pour enregistrer le son.",
+  "permLocation": "Position précise : pour la vitesse, la distance, le tracé et l'altitude.",
+  "permNotif": "Notifications : pour indiquer que l'enregistrement est actif.",
+  "permGrant": "Accorder les autorisations",
+  "permDenied": "Certaines autorisations ont été refusées. Ouvrez les réglages du système pour les accorder.",
+  "permOpenSettings": "Ouvrir les réglages",
+  "safetyTitle": "Avant de rouler",
+  "safetyBody": "Ne manipulez pas votre téléphone en roulant. Utilisez un support solide sur le vélo et respectez la circulation. Pour arrêter l'enregistrement, maintenez le bouton.",
+  "safetyAccept": "Compris",
+  "recGps": "GPS",
+  "recGpsNone": "Pas de GPS",
+  "recFree": "{gb} Go libres",
+  "@recFree": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "recTemp": "{c} °C",
+  "@recTemp": {
+    "placeholders": {
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "recHoldToStop": "Maintenir pour arrêter",
+  "recStart": "Démarrer",
+  "recPause": "Pause",
+  "recResume": "Reprendre",
+  "recSaved": "Enregistrement sauvegardé",
+  "recNoBaro": "Pas de baromètre : la pente et le dénivelé sont moins fiables.",
+  "recHot": "Le téléphone chauffe. Pensez à réduire la qualité.",
+  "recLowBattery": "Batterie faible.",
+  "recSimulation": "Simulation",
+  "recStarting": "Démarrage de la caméra…",
+  "recError": "Erreur : {msg}",
+  "@recError": {
+    "placeholders": {
+      "msg": {
+        "type": "String"
+      }
+    }
+  },
+  "libEmpty": "Aucun enregistrement pour l'instant.",
+  "libOpen": "Ouvrir",
+  "libShare": "Partager",
+  "libDelete": "Supprimer",
+  "libDeleteConfirm": "Supprimer cet enregistrement ?",
+  "libCancel": "Annuler",
+  "libDeleteDo": "Supprimer",
+  "libNote": "Les vidéos sont dans Movies/PedalaCast ; les fichiers GPX et JSON dans Documents/PedalaCast.",
+  "layoutTitle": "Disposition de l'overlay",
+  "layoutSize": "Taille",
+  "layoutSmall": "Petit",
+  "layoutMedium": "Moyen",
+  "layoutLarge": "Grand",
+  "layoutBlocks": "Blocs",
+  "layoutPhone": "Téléphone",
+  "layoutNoDevice": "Aucun appareil",
+  "layoutNoDeviceHint": "Connectez un capteur Bluetooth pour afficher cette donnée (bientôt disponible).",
+  "layoutFullTrack": "Afficher le tracé complet sur la mini-carte",
+  "blk_speed_gauge": "Compteur de vitesse",
+  "blk_distance_climb": "Distance et dénivelé",
+  "blk_minimap": "Mini-carte",
+  "blk_elevation_profile": "Profil d'altitude",
+  "blk_grade_badge": "Pastille de pente",
+  "blk_hr": "Fréquence cardiaque",
+  "blk_cadence": "Cadence",
+  "blk_power": "Puissance",
+  "blk_phone_status": "Barre d'état du téléphone",
+  "blk_live_badge": "Pastille REC / EN DIRECT",
+  "setTitle": "Réglages",
+  "setResolution": "Résolution",
+  "set1080": "1080p (30 i/s)",
+  "set720": "720p (30 i/s)",
+  "setKeepScreen": "Garder l'écran allumé",
+  "setMic": "Enregistrer le microphone",
+  "setAutoPause": "Pause automatique (à l'arrêt)",
+  "setPrivacy": "Zone de confidentialité : {m} m",
+  "@setPrivacy": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "setPrivacyHint": "Le tracé n'apparaît pas sur la mini-carte dans ce rayon autour du point de départ.",
+  "setSimulation": "Mode simulation",
+  "setSimulationHint": "Rejoue un parcours d'exemple comme un GPS en direct, pour tester l'overlay sans rouler.",
+  "dbgTitle": "Débogage de l'overlay",
+  "dbgBody": "Dessine l'overlay sur une image statique avec des données fixes et enregistre un PNG dans Pictures/PedalaCast.",
+  "dbgRender": "Générer un PNG",
+  "dbgSaved": "PNG enregistré : {uri}",
+  "@dbgSaved": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  },
+  "bgTitle": "Empêcher le système d'arrêter l'enregistrement",
+  "bgBody": "Sur les téléphones comme Xiaomi, Redmi et POCO (HyperOS/MIUI), le système peut fermer l'application en arrière-plan et perdre la vidéo. Avant de rouler : autorisez le démarrage automatique et réglez la batterie de PedalaCast sur « Sans restriction ».",
+  "bgAutostart": "Démarrage automatique",
+  "bgBattery": "Batterie",
+  "setOrientation": "Orientation de la vidéo",
+  "setLandscape": "Paysage",
+  "setPortrait": "Portrait",
+  "recSettings": "Réglages",
+  "homeLive": "Diffuser en direct (YouTube)",
+  "liveTitle": "Direct YouTube",
+  "liveHelp": "Dans YouTube Studio, créez une diffusion en direct et copiez l'URL du serveur et la clé de diffusion. Collez-les ci-dessous.",
+  "liveUrl": "URL du serveur (RTMPS)",
+  "liveKey": "Clé de diffusion",
+  "liveKeyHint": "La clé est stockée chiffrée sur cet appareil et n'est jamais affichée ni journalisée. Ne la partagez pas.",
+  "liveBadUrl": "Utilisez une URL commençant par rtmps://",
+  "liveNoKey": "Collez la clé de diffusion YouTube.",
+  "liveQuality": "Qualité",
+  "live720": "720p (jusqu'à 4 Mbit/s)",
+  "live1080": "1080p (jusqu'à 6 Mbit/s)",
+  "liveRecordLocal": "Enregistrer une copie sur le téléphone",
+  "liveRecordLocalHint": "Utilise la même vidéo que la diffusion (avec overlay) et continue si le réseau coupe.",
+  "liveHideMap": "Masquer la mini-carte",
+  "liveGo": "Passer en direct",
+  "liveTip": "Testez d'abord avec une diffusion « Non répertoriée » dans YouTube Studio. Le débit s'adapte seul à votre réseau.",
+  "liveOnAir": "EN DIRECT",
+  "liveConnecting": "Connexion…",
+  "liveReconnecting": "Reconnexion…",
+  "liveBitrate": "{mbps} Mbit/s",
+  "@liveBitrate": {
+    "placeholders": {
+      "mbps": {
+        "type": "String"
+      }
+    }
+  },
+  "liveDropped": "{n} images perdues",
+  "@liveDropped": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ovLiveLabel": "EN DIRECT",
+  "ovHrLabel": "FC",
+  "ovRecLabel": "REC"
+}

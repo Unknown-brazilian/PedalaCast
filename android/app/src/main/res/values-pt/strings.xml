@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_channel">Gravação</string>
+    <string name="notif_title">PedalaCast gravando</string>
+    <string name="notif_text">Toque para abrir</string>
+    <string name="notif_stop">Parar</string>
+</resources>
