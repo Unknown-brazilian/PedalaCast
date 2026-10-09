@@ -23,6 +23,7 @@ class CoreChannel {
     required int fps,
     required int bitrate,
     required bool portrait,
+    String cameraId = '',
     required bool mic,
     required bool autoPause,
     required bool simulation,
@@ -34,6 +35,7 @@ class CoreChannel {
     'fps': fps,
     'bitrate': bitrate,
     'portrait': portrait,
+    'cameraId': cameraId,
     'mic': mic,
     'autoPause': autoPause,
     'simulation': simulation,
@@ -90,6 +92,10 @@ class CoreChannel {
     return (png: m['png'] as Uint8List, rects: rects);
   }
 
+  /// Câmeras disponíveis: id, facing (front/back), kind (main/ultrawide/tele/front), equivMm, mp.
+  Future<List<Map<dynamic, dynamic>>> listCameras() async =>
+      ((await _control.invokeMethod<List<dynamic>>('listCameras')) ?? const [])
+          .cast<Map<dynamic, dynamic>>();
   Future<bool> needsBackgroundHelp() async =>
       (await _control.invokeMethod<bool>('needsBackgroundHelp')) ?? false;
   Future<void> openBatterySettings() =>

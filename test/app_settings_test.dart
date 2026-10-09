@@ -12,6 +12,8 @@ void main() {
       liveRecordLocal: false,
       hideMinimap: true,
       sizePreset: 'large',
+      cameraId: '2',
+      cameraAsked: true,
       posPortrait: {'minimap': BlockPos(x: 0.1, y: 0.2, scale: 1.5)},
     );
     final c = s.copyWith(mic: false);
@@ -21,6 +23,8 @@ void main() {
     expect(c.liveRecordLocal, isFalse);
     expect(c.hideMinimap, isTrue);
     expect(c.sizePreset, 'large');
+    expect(c.cameraId, '2');
+    expect(c.cameraAsked, isTrue);
     expect(c.posPortrait['minimap']?.scale, 1.5);
     expect(c.mic, isFalse);
   });

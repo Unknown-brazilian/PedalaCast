@@ -24,6 +24,7 @@ import com.pedro.encoder.input.sources.audio.AudioSource
 import com.pedro.encoder.input.sources.audio.MicrophoneSource
 import com.pedro.encoder.input.sources.audio.NoAudioSource
 import com.pedro.encoder.input.sources.video.Camera2Source
+import com.pedro.encoder.input.sources.video.VideoSource
 import com.pedro.encoder.input.gl.render.filters.`object`.ImageFilterRender
 import com.pedro.library.base.recording.RecordController
 import com.pedro.library.generic.GenericStream
@@ -34,7 +35,7 @@ import java.util.Locale
 
 data class VideoConfig(
     val width: Int = 1920, val height: Int = 1080, val fps: Int = 30,
-    val bitrate: Int = 12_000_000, val portrait: Boolean = false, val micEnabled: Boolean = true,
+    val bitrate: Int = 12_000_000, val portrait: Boolean = false, val cameraId: String? = null, val micEnabled: Boolean = true,
     val autoPause: Boolean = false, val privacyRadiusM: Double = 300.0,
 ) {
     /** Tamanho final do quadro (já com a rotação aplicada). */
@@ -204,7 +205,9 @@ object PedalaCore {
         if (state != State.IDLE) return@runCatching
         config = cfg
         val audio: AudioSource = if (cfg.micEnabled) MicrophoneSource() else NoAudioSource()
-        val s = GenericStream(app, liveChecker, Camera2Source(app), audio)
+        val validId = cfg.cameraId?.takeIf { id -> CameraCatalog.list(app).any { it["id"] == id } }
+        val video: VideoSource = if (validId != null) CameraIdSource(app, validId) else Camera2Source(app)
+        val s = GenericStream(app, liveChecker, video, audio)
         if (!s.prepareVideo(cfg.width, cfg.height, cfg.bitrate, cfg.fps, 2, if (cfg.portrait) 90 else 0)) error("Câmera/encoder não suportam ${cfg.width}x${cfg.height}")
         if (!s.prepareAudio(44100, true, 128_000)) error("Falha ao preparar o áudio")
         val f = ImageFilterRender().apply { setScale(100f, 100f); setPosition(0f, 0f) }

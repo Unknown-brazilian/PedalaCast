@@ -62,6 +62,8 @@ class AppSettings {
     this.liveHeight = 720,
     this.liveRecordLocal = true,
     this.hideMinimap = false,
+    this.cameraId = '',
+    this.cameraAsked = false,
     this.posLandscape = const {},
     this.posPortrait = const {},
   });
@@ -81,6 +83,10 @@ class AppSettings {
   final int liveHeight; // 720 ou 1080
   final bool liveRecordLocal;
   final bool hideMinimap;
+
+  /// ID da câmera preferida ('' = automática: traseira principal).
+  final String cameraId;
+  final bool cameraAsked;
   final Map<String, BlockPos> posLandscape;
   final Map<String, BlockPos> posPortrait;
 
@@ -139,6 +145,8 @@ class AppSettings {
     int? liveHeight,
     bool? liveRecordLocal,
     bool? hideMinimap,
+    String? cameraId,
+    bool? cameraAsked,
     Map<String, BlockPos>? posLandscape,
     Map<String, BlockPos>? posPortrait,
   }) => AppSettings(
@@ -157,6 +165,8 @@ class AppSettings {
     liveHeight: liveHeight ?? this.liveHeight,
     liveRecordLocal: liveRecordLocal ?? this.liveRecordLocal,
     hideMinimap: hideMinimap ?? this.hideMinimap,
+    cameraId: cameraId ?? this.cameraId,
+    cameraAsked: cameraAsked ?? this.cameraAsked,
     posLandscape: posLandscape ?? this.posLandscape,
     posPortrait: posPortrait ?? this.posPortrait,
   );
@@ -189,6 +199,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
       liveHeight: p.getInt('liveHeight') ?? 720,
       liveRecordLocal: p.getBool('liveRecordLocal') ?? true,
       hideMinimap: p.getBool('hideMinimap') ?? false,
+      cameraId: p.getString('cameraId') ?? '',
+      cameraAsked: p.getBool('cameraAsked') ?? false,
       posLandscape: decodePos(p.getString('posLandscape')),
       posPortrait: decodePos(p.getString('posPortrait')),
     );
@@ -212,6 +224,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
     await p.setInt('liveHeight', s.liveHeight);
     await p.setBool('liveRecordLocal', s.liveRecordLocal);
     await p.setBool('hideMinimap', s.hideMinimap);
+    await p.setString('cameraId', s.cameraId);
+    await p.setBool('cameraAsked', s.cameraAsked);
     await p.setString('posLandscape', encodePos(s.posLandscape));
     await p.setString('posPortrait', encodePos(s.posPortrait));
   }

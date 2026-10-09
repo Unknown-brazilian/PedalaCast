@@ -203,5 +203,21 @@
         "type": "int"
       }
     }
+  },
+  "camSwitch": "Switch camera",
+  "camPickTitle": "Which camera to use?",
+  "camPickHint": "Choose the camera to record with. You can change it later with the camera button on the recording screen.",
+  "camAuto": "Automatic (main rear)",
+  "camFront": "Front",
+  "camRearMain": "Rear main",
+  "camRearUltra": "Rear ultra-wide",
+  "camRearTele": "Rear telephoto",
+  "camMp": "{mp} MP",
+  "@camMp": {
+    "placeholders": {
+      "mp": {
+        "type": "int"
+      }
+    }
   }
 }

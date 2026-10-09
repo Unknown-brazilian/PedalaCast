@@ -452,4 +452,34 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get editTapHint =>
       'Touchez un bloc pour le sélectionner et ajuster sa taille.';
+
+  @override
+  String get camSwitch => 'Changer de caméra';
+
+  @override
+  String get camPickTitle => 'Quelle caméra utiliser ?';
+
+  @override
+  String get camPickHint =>
+      'Choisissez la caméra pour enregistrer. Vous pourrez la changer avec le bouton caméra de l\'écran d\'enregistrement.';
+
+  @override
+  String get camAuto => 'Automatique (arrière principale)';
+
+  @override
+  String get camFront => 'Frontale';
+
+  @override
+  String get camRearMain => 'Arrière principale';
+
+  @override
+  String get camRearUltra => 'Arrière ultra grand-angle';
+
+  @override
+  String get camRearTele => 'Arrière téléobjectif';
+
+  @override
+  String camMp(int mp) {
+    return '$mp Mpx';
+  }
 }

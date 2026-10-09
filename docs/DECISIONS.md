@@ -55,3 +55,7 @@ Bugs corrigidos junto: `AppSettings.copyWith` descartava `liveHeight`, `liveReco
 
 ## PIP da câmera frontal (planejado, não implementado)
 Exige câmera frontal + traseira abertas ao mesmo tempo (`CameraManager.getConcurrentCameraIds`, Android 11+, depende do chip). A RootEncoder não suporta; o plano é abrir a frontal com Camera2 próprio escrevendo em um `SurfaceFilterRender` como mais um bloco do overlay, e esconder a opção em aparelhos sem suporte.
+
+## Escolha de câmera (v0.3.1)
+`CameraCatalog` lista as câmeras do `CameraManager` com capacidade BACKWARD_COMPATIBLE e saída ≥ 720p; o tipo é estimado pela distância focal equivalente (≤20 mm ultra-angular, >45 mm tele, senão principal) e mostra os megapixels (ajuda a identificar sensores de macro/profundidade de 2 MP). `CameraIdSource` abre uma câmera por ID usando o `Camera2ApiManager` da RootEncoder (a `Camera2Source` dela só escolhe por frontal/traseira). A escolha é salva (`cameraId`) e perguntada uma única vez, na primeira gravação, se houver mais de uma câmera; depois, pelo botão de câmera na tela de gravação (some durante gravação/live). Só pode trocar com o preview parado (a troca reinicia o pipeline).
+Limitações: câmeras físicas internas de uma câmera lógica (multi-câmera) não são listadas; frontal sem espelhamento (como os espectadores veem); a rotação da frontal não foi verificada em aparelho real.

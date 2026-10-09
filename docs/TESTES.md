@@ -51,3 +51,9 @@ Marque ao executar. Nada abaixo foi executado ainda.
 - [ ] Posições separadas em horizontal e vertical; "Restaurar tudo" volta ao automático.
 - [ ] Vídeo gravado com blocos movidos: conferir que o MP4 tem os blocos nas mesmas posições do preview.
 - [ ] "Ocultar mini-mapa" na live realmente some com o mini-mapa (corrigido nesta versão).
+
+## Escolha de câmera (v0.3.1)
+- [x] Emulador (1 câmera): botão aparece, lista mostra "Traseira principal (3 MP · 37mm)", escolher por ID abre a câmera e mostra o preview com overlay.
+- [ ] Aparelho real com várias câmeras (ex.: Xiaomi 14C): a pergunta aparece na primeira gravação; a lista mostra frontal e traseiras; sensores de 2 MP aparecem identificáveis.
+- [ ] Frontal: imagem na orientação certa na paisagem esquerda/direita e no modo vertical; vídeo gravado igual ao preview.
+- [ ] Trocar câmera várias vezes seguidas não trava nem vaza câmera aberta.

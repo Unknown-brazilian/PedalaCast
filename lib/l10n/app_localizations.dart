@@ -905,6 +905,60 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Toque em um bloco para escolher e ajustar o tamanho.'**
   String get editTapHint;
+
+  /// No description provided for @camSwitch.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trocar câmera'**
+  String get camSwitch;
+
+  /// No description provided for @camPickTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Qual câmera usar?'**
+  String get camPickTitle;
+
+  /// No description provided for @camPickHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolha a câmera para gravar. Você pode mudar depois pelo botão de câmera na tela de gravação.'**
+  String get camPickHint;
+
+  /// No description provided for @camAuto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Automática (traseira principal)'**
+  String get camAuto;
+
+  /// No description provided for @camFront.
+  ///
+  /// In pt, this message translates to:
+  /// **'Frontal'**
+  String get camFront;
+
+  /// No description provided for @camRearMain.
+  ///
+  /// In pt, this message translates to:
+  /// **'Traseira principal'**
+  String get camRearMain;
+
+  /// No description provided for @camRearUltra.
+  ///
+  /// In pt, this message translates to:
+  /// **'Traseira ultra-angular'**
+  String get camRearUltra;
+
+  /// No description provided for @camRearTele.
+  ///
+  /// In pt, this message translates to:
+  /// **'Traseira teleobjetiva'**
+  String get camRearTele;
+
+  /// No description provided for @camMp.
+  ///
+  /// In pt, this message translates to:
+  /// **'{mp} MP'**
+  String camMp(int mp);
 }
 
 class _AppLocalizationsDelegate

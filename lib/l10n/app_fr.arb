@@ -203,5 +203,21 @@
         "type": "int"
       }
     }
+  },
+  "camSwitch": "Changer de caméra",
+  "camPickTitle": "Quelle caméra utiliser ?",
+  "camPickHint": "Choisissez la caméra pour enregistrer. Vous pourrez la changer avec le bouton caméra de l'écran d'enregistrement.",
+  "camAuto": "Automatique (arrière principale)",
+  "camFront": "Frontale",
+  "camRearMain": "Arrière principale",
+  "camRearUltra": "Arrière ultra grand-angle",
+  "camRearTele": "Arrière téléobjectif",
+  "camMp": "{mp} Mpx",
+  "@camMp": {
+    "placeholders": {
+      "mp": {
+        "type": "int"
+      }
+    }
   }
 }

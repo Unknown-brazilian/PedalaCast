@@ -452,4 +452,34 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get editTapHint =>
       'Toca un bloque para seleccionarlo y ajustar su tamaño.';
+
+  @override
+  String get camSwitch => 'Cambiar cámara';
+
+  @override
+  String get camPickTitle => '¿Qué cámara usar?';
+
+  @override
+  String get camPickHint =>
+      'Elige la cámara para grabar. Puedes cambiarla después con el botón de cámara de la pantalla de grabación.';
+
+  @override
+  String get camAuto => 'Automática (trasera principal)';
+
+  @override
+  String get camFront => 'Frontal';
+
+  @override
+  String get camRearMain => 'Trasera principal';
+
+  @override
+  String get camRearUltra => 'Trasera ultra gran angular';
+
+  @override
+  String get camRearTele => 'Trasera teleobjetivo';
+
+  @override
+  String camMp(int mp) {
+    return '$mp MP';
+  }
 }

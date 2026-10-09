@@ -203,5 +203,21 @@
         "type": "int"
       }
     }
+  },
+  "camSwitch": "Cambiar cámara",
+  "camPickTitle": "¿Qué cámara usar?",
+  "camPickHint": "Elige la cámara para grabar. Puedes cambiarla después con el botón de cámara de la pantalla de grabación.",
+  "camAuto": "Automática (trasera principal)",
+  "camFront": "Frontal",
+  "camRearMain": "Trasera principal",
+  "camRearUltra": "Trasera ultra gran angular",
+  "camRearTele": "Trasera teleobjetivo",
+  "camMp": "{mp} MP",
+  "@camMp": {
+    "placeholders": {
+      "mp": {
+        "type": "int"
+      }
+    }
   }
 }

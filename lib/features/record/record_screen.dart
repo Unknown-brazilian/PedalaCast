@@ -81,6 +81,94 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
     }
   }
 
+  /// Na primeira vez, pergunta qual câmera o usuário prefere (se houver mais de uma).
+  Future<void> _maybeAskCamera() async {
+    final s = ref.read(settingsProvider);
+    if (s.cameraAsked || !mounted) return;
+    final cams = await _core.listCameras();
+    if (cams.length > 1 && mounted) {
+      await _pickCamera(cams);
+    }
+    final now = ref.read(settingsProvider);
+    await ref
+        .read(settingsProvider.notifier)
+        .update(now.copyWith(cameraAsked: true));
+  }
+
+  /// Mostra a lista de câmeras e salva a escolhida. Retorna true se a escolha mudou.
+  Future<bool> _pickCamera(List<Map<dynamic, dynamic>> cams) async {
+    final l = AppLocalizations.of(context);
+    final cur = ref.read(settingsProvider).cameraId;
+    String label(Map<dynamic, dynamic> c) {
+      final mp = (c['mp'] as num?)?.toInt() ?? 0;
+      final mm = (c['equivMm'] as num?)?.toInt() ?? 0;
+      final kind = switch (c['kind']) {
+        'front' => l.camFront,
+        'ultrawide' => l.camRearUltra,
+        'tele' => l.camRearTele,
+        _ => l.camRearMain,
+      };
+      final extra = [
+        if (mp > 0) l.camMp(mp),
+        if (mm > 0 && c['kind'] != 'front') '${mm}mm',
+      ].join(' · ');
+      return extra.isEmpty ? kind : '$kind ($extra)';
+    }
+
+    final chosen = await showDialog<String>(
+      context: context,
+      builder: (c) => SimpleDialog(
+        title: Text(l.camPickTitle),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+            child: Text(l.camPickHint),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(c, ''),
+            child: ListTile(
+              leading: Icon(
+                cur.isEmpty
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off,
+              ),
+              title: Text(l.camAuto),
+            ),
+          ),
+          for (final cam in cams)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(c, cam['id'] as String),
+              child: ListTile(
+                leading: Icon(
+                  cur == cam['id']
+                      ? Icons.radio_button_checked
+                      : Icons.radio_button_off,
+                ),
+                title: Text(label(cam)),
+                subtitle: Text('ID ${cam['id']}'),
+              ),
+            ),
+        ],
+      ),
+    );
+    if (chosen == null || chosen == cur) return false;
+    final s = ref.read(settingsProvider);
+    await ref
+        .read(settingsProvider.notifier)
+        .update(s.copyWith(cameraId: chosen, cameraAsked: true));
+    return true;
+  }
+
+  Future<void> _switchCamera() async {
+    final cams = await _core.listCameras();
+    if (!mounted) return;
+    if (await _pickCamera(cams) && mounted) {
+      setState(() => _textureId = null);
+      await _core.stopPreview();
+      await _startPreview();
+    }
+  }
+
   Future<void> _boot() async {
     final s = ref.read(settingsProvider);
     if (!s.safetyAccepted) {
@@ -93,6 +181,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
       setState(() => _permsOk = false);
       return;
     }
+    await _maybeAskCamera();
     await _startPreview();
   }
 
@@ -146,7 +235,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
   Future<void> _grant() async {
     final ok = await requestAllPermissions();
     setState(() => _permsDenied = !ok);
-    if (ok) await _startPreview();
+    if (ok) {
+      await _maybeAskCamera();
+      await _startPreview();
+    }
   }
 
   Future<void> _startPreview() async {
@@ -158,6 +250,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen>
         fps: s.fps,
         bitrate: widget.live ? s.liveBitrate : s.bitrate,
         portrait: s.portrait,
+        cameraId: s.cameraId,
         mic: s.mic,
         autoPause: s.autoPause,
         simulation: s.simulation,
@@ -287,6 +380,13 @@ extension on _RecordScreenState {
             },
           )
         : null;
+    final cameraBtn = status.active
+        ? null
+        : IconButton.filledTonal(
+            tooltip: l.camSwitch,
+            icon: const Icon(Icons.cameraswitch),
+            onPressed: _switchCamera,
+          );
     final settingsBtn = IconButton.filledTonal(
       tooltip: l.recSettings,
       icon: const Icon(Icons.settings),
@@ -302,6 +402,7 @@ extension on _RecordScreenState {
                 children: [
                   Expanded(child: _StatusBar(status: status)),
                   ?hideMap,
+                  ?cameraBtn,
                   settingsBtn,
                 ],
               ),
@@ -320,7 +421,7 @@ extension on _RecordScreenState {
         Positioned(
           top: 8,
           right: 8,
-          child: Row(spacing: 8, children: [?hideMap, settingsBtn]),
+          child: Row(spacing: 8, children: [?cameraBtn, ?hideMap, settingsBtn]),
         ),
         Positioned(
           right: 16,
