@@ -334,4 +334,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get bgBattery => 'Bateria';
+
+  @override
+  String get setOrientation => 'Orientação do vídeo';
+
+  @override
+  String get setLandscape => 'Horizontal';
+
+  @override
+  String get setPortrait => 'Vertical';
+
+  @override
+  String get recSettings => 'Ajustes';
 }

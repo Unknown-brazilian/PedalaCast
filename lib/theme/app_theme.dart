@@ -31,13 +31,13 @@ class BrandColors {
       Color(int.parse('FF${s.replaceFirst('#', '')}', radix: 16));
 
   factory BrandColors.fromJson(Map<String, dynamic> j) => BrandColors(
-        background: _hex(j['background'] as String),
-        accent: _hex(j['accent'] as String),
-        live: _hex(j['live'] as String),
-        text: _hex(j['text'] as String),
-        onAccent: _hex(j['onAccent'] as String),
-        warning: _hex(j['warning'] as String),
-      );
+    background: _hex(j['background'] as String),
+    accent: _hex(j['accent'] as String),
+    live: _hex(j['live'] as String),
+    text: _hex(j['text'] as String),
+    onAccent: _hex(j['onAccent'] as String),
+    warning: _hex(j['warning'] as String),
+  );
 
   static Future<BrandColors> load() async {
     final raw = await rootBundle.loadString('assets/brand/brand_colors.json');

@@ -14,7 +14,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    void go(Widget w) => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => w));
+    void go(Widget w) =>
+        Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => w));
     return Scaffold(
       appBar: AppBar(title: Text(l.appName)),
       body: ListView(
@@ -29,16 +30,34 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _tile(Icons.video_library_outlined, l.homeLibrary, () => go(const LibraryScreen())),
-          _tile(Icons.dashboard_customize_outlined, l.homeLayout, () => go(const LayoutScreen())),
+          _tile(
+            Icons.video_library_outlined,
+            l.homeLibrary,
+            () => go(const LibraryScreen()),
+          ),
+          _tile(
+            Icons.dashboard_customize_outlined,
+            l.homeLayout,
+            () => go(const LayoutScreen()),
+          ),
           _tile(Icons.tune, l.homeSettings, () => go(const SettingsScreen())),
-          _tile(Icons.bug_report_outlined, l.homeDebug, () => go(const DebugScreen())),
+          _tile(
+            Icons.bug_report_outlined,
+            l.homeDebug,
+            () => go(const DebugScreen()),
+          ),
           _tile(Icons.info_outline, l.homeAbout, () => go(const AboutScreen())),
         ],
       ),
     );
   }
 
-  Widget _tile(IconData i, String t, VoidCallback onTap) =>
-      Card(child: ListTile(leading: Icon(i), title: Text(t), trailing: const Icon(Icons.chevron_right), onTap: onTap));
+  Widget _tile(IconData i, String t, VoidCallback onTap) => Card(
+    child: ListTile(
+      leading: Icon(i),
+      title: Text(t),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
+    ),
+  );
 }

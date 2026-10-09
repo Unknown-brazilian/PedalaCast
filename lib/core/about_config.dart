@@ -26,25 +26,25 @@ class AboutConfig {
   final String lightningAddress;
 
   factory AboutConfig.fromJson(Map<String, dynamic> j) => AboutConfig(
-        authorName: (j['authorName'] as String?) ?? '',
-        bio: (j['bio'] as String?) ?? '',
-        links: [
-          for (final l in (j['links'] as List<dynamic>? ?? const []))
-            AboutLink((l as Map)['label'] as String, l['url'] as String),
-        ],
-        feedbackEmail: (j['feedbackEmail'] as String?) ?? '',
-        privacyPolicyUrl: (j['privacyPolicyUrl'] as String?) ?? '',
-        lightningAddress: (j['lightningAddress'] as String?) ?? '',
-      );
+    authorName: (j['authorName'] as String?) ?? '',
+    bio: (j['bio'] as String?) ?? '',
+    links: [
+      for (final l in (j['links'] as List<dynamic>? ?? const []))
+        AboutLink((l as Map)['label'] as String, l['url'] as String),
+    ],
+    feedbackEmail: (j['feedbackEmail'] as String?) ?? '',
+    privacyPolicyUrl: (j['privacyPolicyUrl'] as String?) ?? '',
+    lightningAddress: (j['lightningAddress'] as String?) ?? '',
+  );
 
   static Future<AboutConfig> load() async => AboutConfig.fromJson(
-        jsonDecode(await rootBundle.loadString('assets/about_config.json'))
-            as Map<String, dynamic>,
-      );
+    jsonDecode(await rootBundle.loadString('assets/about_config.json'))
+        as Map<String, dynamic>,
+  );
 
   /// Valida o formato `nome@dominio` de um endereço Lightning.
   static bool isValidLightningAddress(String a) => RegExp(
-        r'^[a-z0-9._+-]+@[a-z0-9-]+(\.[a-z0-9-]+)+$',
-        caseSensitive: false,
-      ).hasMatch(a.trim());
+    r'^[a-z0-9._+-]+@[a-z0-9-]+(\.[a-z0-9-]+)+$',
+    caseSensitive: false,
+  ).hasMatch(a.trim());
 }

@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppSettings {
   const AppSettings({
     this.height = 1080,
+    this.portrait = false,
     this.fps = 30,
     this.keepScreenOn = true,
     this.mic = true,
@@ -20,6 +21,7 @@ class AppSettings {
   });
 
   final int height; // 1080 ou 720
+  final bool portrait;
   final int fps;
   final bool keepScreenOn;
   final bool mic;
@@ -48,22 +50,23 @@ class AppSettings {
   ];
 
   String get layoutJson => jsonEncode({
-        'blocks': [
-          for (final t in blockTypes)
-            {
-              'id': t,
-              'type': t,
-              'enabled': !disabled.contains(t),
-              'anchor': 'auto',
-              'sizePreset': sizePreset,
-            },
-        ],
-        'minimapFullTrack': minimapFullTrack,
-        'privacyRadiusM': privacyRadiusM,
-      });
+    'blocks': [
+      for (final t in blockTypes)
+        {
+          'id': t,
+          'type': t,
+          'enabled': !disabled.contains(t),
+          'anchor': 'auto',
+          'sizePreset': sizePreset,
+        },
+    ],
+    'minimapFullTrack': minimapFullTrack,
+    'privacyRadiusM': privacyRadiusM,
+  });
 
   AppSettings copyWith({
     int? height,
+    bool? portrait,
     int? fps,
     bool? keepScreenOn,
     bool? mic,
@@ -74,20 +77,20 @@ class AppSettings {
     Set<String>? disabled,
     bool? minimapFullTrack,
     bool? safetyAccepted,
-  }) =>
-      AppSettings(
-        height: height ?? this.height,
-        fps: fps ?? this.fps,
-        keepScreenOn: keepScreenOn ?? this.keepScreenOn,
-        mic: mic ?? this.mic,
-        autoPause: autoPause ?? this.autoPause,
-        simulation: simulation ?? this.simulation,
-        privacyRadiusM: privacyRadiusM ?? this.privacyRadiusM,
-        sizePreset: sizePreset ?? this.sizePreset,
-        disabled: disabled ?? this.disabled,
-        minimapFullTrack: minimapFullTrack ?? this.minimapFullTrack,
-        safetyAccepted: safetyAccepted ?? this.safetyAccepted,
-      );
+  }) => AppSettings(
+    height: height ?? this.height,
+    portrait: portrait ?? this.portrait,
+    fps: fps ?? this.fps,
+    keepScreenOn: keepScreenOn ?? this.keepScreenOn,
+    mic: mic ?? this.mic,
+    autoPause: autoPause ?? this.autoPause,
+    simulation: simulation ?? this.simulation,
+    privacyRadiusM: privacyRadiusM ?? this.privacyRadiusM,
+    sizePreset: sizePreset ?? this.sizePreset,
+    disabled: disabled ?? this.disabled,
+    minimapFullTrack: minimapFullTrack ?? this.minimapFullTrack,
+    safetyAccepted: safetyAccepted ?? this.safetyAccepted,
+  );
 }
 
 class SettingsNotifier extends Notifier<AppSettings> {
@@ -103,6 +106,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
     final p = _prefs = await SharedPreferences.getInstance();
     state = AppSettings(
       height: p.getInt('height') ?? 1080,
+      portrait: p.getBool('portrait') ?? false,
       fps: p.getInt('fps') ?? 30,
       keepScreenOn: p.getBool('keepScreenOn') ?? true,
       mic: p.getBool('mic') ?? true,
@@ -120,6 +124,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = s;
     final p = _prefs ?? await SharedPreferences.getInstance();
     await p.setInt('height', s.height);
+    await p.setBool('portrait', s.portrait);
     await p.setInt('fps', s.fps);
     await p.setBool('keepScreenOn', s.keepScreenOn);
     await p.setBool('mic', s.mic);
@@ -133,4 +138,6 @@ class SettingsNotifier extends Notifier<AppSettings> {
   }
 }
 
-final settingsProvider = NotifierProvider<SettingsNotifier, AppSettings>(SettingsNotifier.new);
+final settingsProvider = NotifierProvider<SettingsNotifier, AppSettings>(
+  SettingsNotifier.new,
+);

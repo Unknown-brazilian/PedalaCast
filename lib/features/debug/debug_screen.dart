@@ -23,20 +23,33 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
       appBar: AppBar(title: Text(l.dbgTitle)),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 16, children: [
-          Text(l.dbgBody),
-          FilledButton(
-            onPressed: _busy
-                ? null
-                : () async {
-                    setState(() => _busy = true);
-                    final uri = await ref.read(coreProvider).renderDebugPng(ref.read(settingsProvider).layoutJson);
-                    if (mounted) setState(() { _busy = false; _msg = l.dbgSaved(uri); });
-                  },
-            child: Text(l.dbgRender),
-          ),
-          if (_msg != null) Text(_msg!),
-        ]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 16,
+          children: [
+            Text(l.dbgBody),
+            FilledButton(
+              onPressed: _busy
+                  ? null
+                  : () async {
+                      setState(() => _busy = true);
+                      final uri = await ref
+                          .read(coreProvider)
+                          .renderDebugPng(
+                            ref.read(settingsProvider).layoutJson,
+                          );
+                      if (mounted) {
+                        setState(() {
+                          _busy = false;
+                          _msg = l.dbgSaved(uri);
+                        });
+                      }
+                    },
+              child: Text(l.dbgRender),
+            ),
+            if (_msg != null) Text(_msg!),
+          ],
+        ),
       ),
     );
   }

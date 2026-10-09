@@ -30,3 +30,7 @@ Marque ao executar. Nada abaixo foi executado ainda.
 - [ ] Sem barômetro: aviso exibido, D+ e inclinação aceitáveis só com GPS.
 - [ ] 1080p/30 contra 720p/30: fps do preview, temperatura e tamanho do arquivo no chip G85.
 - [ ] Permissão de localização "durante o uso" mantém o GPS com tela bloqueada via serviço em primeiro plano.
+
+## Orientação vertical e botão de ajustes (v0.1.2)
+- [ ] Ajustes > Orientação > Vertical: preview em retrato, vídeo gravado em retrato e na posição certa, overlay legível (perfil de elevação estreito).
+- [ ] Botão de ajustes na tela de gravação: abre sem parar a gravação; mudar resolução/orientação/microfone fora da gravação reinicia o preview.

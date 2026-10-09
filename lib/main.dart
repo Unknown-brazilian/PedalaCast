@@ -18,17 +18,17 @@ class PedalaCastApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        onGenerateTitle: (c) => AppLocalizations.of(c).appName,
-        theme: colors.toTheme(),
-        themeMode: ThemeMode.dark,
-        locale: const Locale('pt', 'BR'),
-        supportedLocales: AppLocalizations.supportedLocales,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        home: const HomeScreen(),
-      );
+    onGenerateTitle: (c) => AppLocalizations.of(c).appName,
+    theme: colors.toTheme(),
+    themeMode: ThemeMode.dark,
+    locale: const Locale('pt', 'BR'),
+    supportedLocales: AppLocalizations.supportedLocales,
+    localizationsDelegates: const [
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    home: const HomeScreen(),
+  );
 }

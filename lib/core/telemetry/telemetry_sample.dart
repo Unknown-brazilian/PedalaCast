@@ -39,24 +39,24 @@ class TelemetrySample {
   final double? tempC;
 
   factory TelemetrySample.fromMap(Map<dynamic, dynamic> m) => TelemetrySample(
-        tMs: (m['tMs'] as num).toInt(),
-        epochMs: (m['epochMs'] as num).toInt(),
-        lat: (m['lat'] as num?)?.toDouble(),
-        lon: (m['lon'] as num?)?.toDouble(),
-        speedMps: (m['speedMps'] as num?)?.toDouble(),
-        altitudeM: (m['altitudeM'] as num?)?.toDouble(),
-        gradePct: (m['gradePct'] as num?)?.toDouble(),
-        distanceM: (m['distanceM'] as num).toDouble(),
-        ascentM: (m['ascentM'] as num).toDouble(),
-        hrBpm: (m['hrBpm'] as num?)?.toInt(),
-        cadenceRpm: (m['cadenceRpm'] as num?)?.toInt(),
-        powerW: (m['powerW'] as num?)?.toInt(),
-        batteryPct: (m['batteryPct'] as num?)?.toInt() ?? -1,
-        charging: (m['charging'] as bool?) ?? false,
-        signalLevel: (m['signalLevel'] as num?)?.toInt(),
-        networkType: m['networkType'] as String?,
-        tempC: (m['tempC'] as num?)?.toDouble(),
-      );
+    tMs: (m['tMs'] as num).toInt(),
+    epochMs: (m['epochMs'] as num).toInt(),
+    lat: (m['lat'] as num?)?.toDouble(),
+    lon: (m['lon'] as num?)?.toDouble(),
+    speedMps: (m['speedMps'] as num?)?.toDouble(),
+    altitudeM: (m['altitudeM'] as num?)?.toDouble(),
+    gradePct: (m['gradePct'] as num?)?.toDouble(),
+    distanceM: (m['distanceM'] as num).toDouble(),
+    ascentM: (m['ascentM'] as num).toDouble(),
+    hrBpm: (m['hrBpm'] as num?)?.toInt(),
+    cadenceRpm: (m['cadenceRpm'] as num?)?.toInt(),
+    powerW: (m['powerW'] as num?)?.toInt(),
+    batteryPct: (m['batteryPct'] as num?)?.toInt() ?? -1,
+    charging: (m['charging'] as bool?) ?? false,
+    signalLevel: (m['signalLevel'] as num?)?.toInt(),
+    networkType: m['networkType'] as String?,
+    tempC: (m['tempC'] as num?)?.toDouble(),
+  );
 }
 
 /// Status enviado pelo núcleo Kotlin (1 Hz).
@@ -86,14 +86,14 @@ class CoreStatus {
   bool get recording => state == 'recording' || state == 'paused';
 
   factory CoreStatus.fromMap(Map<dynamic, dynamic> m) => CoreStatus(
-        state: m['state'] as String? ?? 'idle',
-        elapsedMs: (m['elapsedMs'] as num?)?.toInt() ?? 0,
-        gpsOk: (m['gpsOk'] as bool?) ?? false,
-        hasBarometer: (m['hasBarometer'] as bool?) ?? true,
-        freeBytes: (m['freeBytes'] as num?)?.toInt() ?? 0,
-        tempC: (m['tempC'] as num?)?.toDouble(),
-        batteryPct: (m['batteryPct'] as num?)?.toInt() ?? -1,
-        simulation: (m['simulation'] as bool?) ?? false,
-        error: m['error'] as String?,
-      );
+    state: m['state'] as String? ?? 'idle',
+    elapsedMs: (m['elapsedMs'] as num?)?.toInt() ?? 0,
+    gpsOk: (m['gpsOk'] as bool?) ?? false,
+    hasBarometer: (m['hasBarometer'] as bool?) ?? true,
+    freeBytes: (m['freeBytes'] as num?)?.toInt() ?? 0,
+    tempC: (m['tempC'] as num?)?.toDouble(),
+    batteryPct: (m['batteryPct'] as num?)?.toInt() ?? -1,
+    simulation: (m['simulation'] as bool?) ?? false,
+    error: m['error'] as String?,
+  );
 }

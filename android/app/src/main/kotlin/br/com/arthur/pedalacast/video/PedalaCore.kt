@@ -33,9 +33,13 @@ import java.util.Locale
 
 data class VideoConfig(
     val width: Int = 1920, val height: Int = 1080, val fps: Int = 30,
-    val bitrate: Int = 12_000_000, val micEnabled: Boolean = true,
+    val bitrate: Int = 12_000_000, val portrait: Boolean = false, val micEnabled: Boolean = true,
     val autoPause: Boolean = false, val privacyRadiusM: Double = 300.0,
-)
+) {
+    /** Tamanho final do quadro (já com a rotação aplicada). */
+    val frameW get() = if (portrait) height else width
+    val frameH get() = if (portrait) width else height
+}
 
 /**
  * Pipeline único: câmera → compositor OpenGL (com overlay) → encoder H.264 → MP4.
@@ -122,13 +126,13 @@ object PedalaCore {
             override fun onAuthError() {}
             override fun onAuthSuccess() {}
         }, Camera2Source(app), audio)
-        if (!s.prepareVideo(cfg.width, cfg.height, cfg.bitrate, cfg.fps, 2, 0)) error("Câmera/encoder não suportam ${cfg.width}x${cfg.height}")
+        if (!s.prepareVideo(cfg.width, cfg.height, cfg.bitrate, cfg.fps, 2, if (cfg.portrait) 90 else 0)) error("Câmera/encoder não suportam ${cfg.width}x${cfg.height}")
         if (!s.prepareAudio(44100, true, 128_000)) error("Falha ao preparar o áudio")
         val f = ImageFilterRender().apply { setScale(100f, 100f); setPosition(0f, 0f) }
         s.getGlInterface().addFilter(f)
         filter = f
-        bitmaps = Array(2) { Bitmap.createBitmap(cfg.width, cfg.height, Bitmap.Config.ARGB_8888) }
-        s.startPreview(surface, cfg.width, cfg.height)
+        bitmaps = Array(2) { Bitmap.createBitmap(cfg.frameW, cfg.frameH, Bitmap.Config.ARGB_8888) }
+        s.startPreview(surface, cfg.frameW, cfg.frameH)
         stream = s
         state = State.PREVIEW
         startTelemetry()

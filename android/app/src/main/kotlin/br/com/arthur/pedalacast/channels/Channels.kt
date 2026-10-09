@@ -62,13 +62,14 @@ class Channels(private val activity: Activity, engine: FlutterEngine) {
                 val cfg = VideoConfig(
                     width = (a["width"] as? Int) ?: 1920, height = (a["height"] as? Int) ?: 1080,
                     fps = (a["fps"] as? Int) ?: 30, bitrate = (a["bitrate"] as? Int) ?: 12_000_000,
+                    portrait = (a["portrait"] as? Boolean) ?: false,
                     micEnabled = (a["mic"] as? Boolean) ?: true, autoPause = (a["autoPause"] as? Boolean) ?: false,
                 )
                 PedalaCore.simulation = (a["simulation"] as? Boolean) ?: false
                 PedalaCore.setLayout(a["layout"] as? String)
                 releaseTexture()
                 val e = textures.createSurfaceTexture()
-                e.surfaceTexture().setDefaultBufferSize(cfg.width, cfg.height)
+                e.surfaceTexture().setDefaultBufferSize(cfg.frameW, cfg.frameH)
                 val s = Surface(e.surfaceTexture())
                 entry = e; surface = s
                 PedalaCore.startPreview(s, cfg)

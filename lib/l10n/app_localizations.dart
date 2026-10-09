@@ -687,6 +687,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Bateria'**
   String get bgBattery;
+
+  /// No description provided for @setOrientation.
+  ///
+  /// In pt, this message translates to:
+  /// **'Orientação do vídeo'**
+  String get setOrientation;
+
+  /// No description provided for @setLandscape.
+  ///
+  /// In pt, this message translates to:
+  /// **'Horizontal'**
+  String get setLandscape;
+
+  /// No description provided for @setPortrait.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vertical'**
+  String get setPortrait;
+
+  /// No description provided for @recSettings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ajustes'**
+  String get recSettings;
 }
 
 class _AppLocalizationsDelegate

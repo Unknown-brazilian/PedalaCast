@@ -47,7 +47,7 @@ class OverlayRenderer(private val palette: BrandPalette) {
         bitmap.eraseColor(Color.TRANSPARENT)
         val w = bitmap.width.toFloat()
         val h = bitmap.height.toFloat()
-        val u0 = h / 720f
+        val u0 = min(w, h) / 720f   // retrato e paisagem: referência é o lado menor
         val s = st.sample
         val m = 16f * u0
 

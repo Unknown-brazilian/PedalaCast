@@ -33,3 +33,6 @@ Bitmap do tamanho do vídeo, redesenhado a ~5 Hz **só quando algo muda** (assin
 
 ## Interface
 Riverpod; configurações em `shared_preferences`. Telas pt-BR em ARB (`nullable-getter: false`). Biblioteca de gravações lista via MediaStore (sem plugin extra); abrir/compartilhar/excluir pelo Kotlin.
+
+## Orientação do vídeo (v0.1.2)
+Ajuste "Horizontal/Vertical". Vertical usa `rotation=90` no `prepareVideo` (RootEncoder troca largura/altura do encoder); o bitmap do overlay e o preview usam o tamanho final do quadro. A escala do overlay passa a usar o lado menor/720, então os blocos têm o mesmo tamanho nas duas orientações. A tela de gravação trava na orientação escolhida. **Não testado em aparelho**: conferir se o preview e o vídeo saem na posição certa em retrato.
