@@ -22,3 +22,11 @@ Marque ao executar. Nada abaixo foi executado ainda.
 |---|---|---|
 | | | |
 | | | |
+
+## Xiaomi 14C (Android 14, HyperOS, MediaTek G85) e similares
+- [ ] Aviso de bateria/início automático aparece ao abrir a gravação; os atalhos abrem as telas certas (senão cai em Informações do app).
+- [ ] Com bateria "Sem restrições" + início automático: gravação de 30+ min com tela bloqueada não é encerrada pelo sistema.
+- [ ] Sem esses ajustes: observar se o sistema mata o app (esperado em HyperOS) e se o MP4 fica ilegível.
+- [ ] Sem barômetro: aviso exibido, D+ e inclinação aceitáveis só com GPS.
+- [ ] 1080p/30 contra 720p/30: fps do preview, temperatura e tamanho do arquivo no chip G85.
+- [ ] Permissão de localização "durante o uso" mantém o GPS com tela bloqueada via serviço em primeiro plano.

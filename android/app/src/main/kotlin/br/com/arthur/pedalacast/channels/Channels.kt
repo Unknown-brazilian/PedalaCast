@@ -109,6 +109,27 @@ class Channels(private val activity: Activity, engine: FlutterEngine) {
                     .onSuccess { main.post { result.success(it) } }
                     .onFailure { main.post { result.error("debug", it.message, null) } }
             }.start()
+            "needsBackgroundHelp" -> {
+                val m = android.os.Build.MANUFACTURER.lowercase()
+                val aggressive = m in listOf("xiaomi", "redmi", "poco", "oppo", "realme", "oneplus", "vivo", "huawei", "honor")
+                val pm = activity.getSystemService(android.os.PowerManager::class.java)
+                val unrestricted = pm.isIgnoringBatteryOptimizations(activity.packageName)
+                result.success(aggressive && !unrestricted)
+            }
+            "openBatterySettings" -> {
+                val i = Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                runCatching { activity.startActivity(i) }.onFailure {
+                    activity.startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + activity.packageName)))
+                }
+                result.success(null)
+            }
+            "openAutostartSettings" -> {
+                val xiaomi = Intent().setClassName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity")
+                runCatching { activity.startActivity(xiaomi) }.onFailure {
+                    activity.startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + activity.packageName)))
+                }
+                result.success(null)
+            }
             "hasBarometer" -> result.success(PedalaCore.hasBarometer())
             "listRecordings" -> result.success(Storage.list(activity))
             "openRecording" -> {

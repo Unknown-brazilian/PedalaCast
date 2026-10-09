@@ -321,4 +321,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String dbgSaved(String uri) {
     return 'PNG salvo: $uri';
   }
+
+  @override
+  String get bgTitle => 'Evitar que o sistema encerre a gravação';
+
+  @override
+  String get bgBody =>
+      'Em celulares como Xiaomi, Redmi e POCO (HyperOS/MIUI), o sistema pode fechar o app em segundo plano e perder o vídeo. Antes de pedalar: permita o início automático e deixe a bateria do PedalaCast como \"Sem restrições\".';
+
+  @override
+  String get bgAutostart => 'Início automático';
+
+  @override
+  String get bgBattery => 'Bateria';
 }

@@ -136,5 +136,9 @@
         "type": "String"
       }
     }
-  }
+  },
+  "bgTitle": "Evitar que o sistema encerre a gravação",
+  "bgBody": "Em celulares como Xiaomi, Redmi e POCO (HyperOS/MIUI), o sistema pode fechar o app em segundo plano e perder o vídeo. Antes de pedalar: permita o início automático e deixe a bateria do PedalaCast como \"Sem restrições\".",
+  "bgAutostart": "Início automático",
+  "bgBattery": "Bateria"
 }

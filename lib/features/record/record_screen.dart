@@ -42,6 +42,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> with SingleTickerPr
     if (!s.safetyAccepted) {
       await _showSafety();
     }
+    if (await _core.needsBackgroundHelp() && mounted) await _showBackgroundHelp();
     if (!await hasAllPermissions()) {
       setState(() => _permsOk = false);
       return;
@@ -63,6 +64,23 @@ class _RecordScreenState extends ConsumerState<RecordScreen> with SingleTickerPr
     );
     final n = ref.read(settingsProvider.notifier);
     await n.update(ref.read(settingsProvider).copyWith(safetyAccepted: true));
+  }
+
+  Future<void> _showBackgroundHelp() async {
+    final l = AppLocalizations.of(context);
+    await showDialog<void>(
+      context: context,
+      builder: (c) => AlertDialog(
+        icon: const Icon(Icons.battery_alert),
+        title: Text(l.bgTitle),
+        content: Text(l.bgBody),
+        actions: [
+          TextButton(onPressed: _core.openAutostartSettings, child: Text(l.bgAutostart)),
+          TextButton(onPressed: _core.openBatterySettings, child: Text(l.bgBattery)),
+          FilledButton(onPressed: () => Navigator.pop(c), child: Text(l.safetyAccept)),
+        ],
+      ),
+    );
   }
 
   Future<void> _grant() async {

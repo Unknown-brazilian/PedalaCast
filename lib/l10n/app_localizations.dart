@@ -663,6 +663,30 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'PNG salvo: {uri}'**
   String dbgSaved(String uri);
+
+  /// No description provided for @bgTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Evitar que o sistema encerre a gravação'**
+  String get bgTitle;
+
+  /// No description provided for @bgBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Em celulares como Xiaomi, Redmi e POCO (HyperOS/MIUI), o sistema pode fechar o app em segundo plano e perder o vídeo. Antes de pedalar: permita o início automático e deixe a bateria do PedalaCast como \"Sem restrições\".'**
+  String get bgBody;
+
+  /// No description provided for @bgAutostart.
+  ///
+  /// In pt, this message translates to:
+  /// **'Início automático'**
+  String get bgAutostart;
+
+  /// No description provided for @bgBattery.
+  ///
+  /// In pt, this message translates to:
+  /// **'Bateria'**
+  String get bgBattery;
 }
 
 class _AppLocalizationsDelegate
