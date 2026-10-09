@@ -70,6 +70,26 @@ class CoreChannel {
     'layout': layout,
     ...labels,
   }))!;
+
+  /// PNG do overlay (dados de exemplo) + retângulo normalizado [l,t,r,b] de cada bloco.
+  Future<({Uint8List png, Map<String, List<double>> rects})> renderEditor(
+    String layout,
+    bool portrait,
+    Map<String, String> labels,
+  ) async {
+    final m = (await _control.invokeMethod<Map<dynamic, dynamic>>(
+      'renderEditor',
+      {'layout': layout, 'portrait': portrait, ...labels},
+    ))!;
+    final rects = (m['rects'] as Map).map(
+      (k, v) => MapEntry(
+        k as String,
+        (v as List).map((e) => (e as num).toDouble()).toList(),
+      ),
+    );
+    return (png: m['png'] as Uint8List, rects: rects);
+  }
+
   Future<bool> needsBackgroundHelp() async =>
       (await _control.invokeMethod<bool>('needsBackgroundHelp')) ?? false;
   Future<void> openBatterySettings() =>

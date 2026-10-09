@@ -70,6 +70,9 @@ class BrandColors {
         foregroundColor: text,
         elevation: 0,
       ),
+      sliderTheme: SliderThemeData(
+        inactiveTrackColor: textSecondary.withValues(alpha: 0.35),
+      ),
       cardTheme: const CardThemeData(color: surface),
     );
   }

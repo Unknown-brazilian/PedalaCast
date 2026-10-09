@@ -863,6 +863,48 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'REC'**
   String get ovRecLabel;
+
+  /// No description provided for @editOpen.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mover e redimensionar blocos'**
+  String get editOpen;
+
+  /// No description provided for @editTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mover e redimensionar'**
+  String get editTitle;
+
+  /// No description provided for @editResetAll.
+  ///
+  /// In pt, this message translates to:
+  /// **'Restaurar tudo'**
+  String get editResetAll;
+
+  /// No description provided for @editResetBlock.
+  ///
+  /// In pt, this message translates to:
+  /// **'Restaurar bloco'**
+  String get editResetBlock;
+
+  /// No description provided for @editHelp.
+  ///
+  /// In pt, this message translates to:
+  /// **'Arraste os blocos para onde quiser. Toque em um bloco para mudar o tamanho. Posições salvas para a orientação {orientation}.'**
+  String editHelp(String orientation);
+
+  /// No description provided for @editSize.
+  ///
+  /// In pt, this message translates to:
+  /// **'{pct}%'**
+  String editSize(int pct);
+
+  /// No description provided for @editTapHint.
+  ///
+  /// In pt, this message translates to:
+  /// **'Toque em um bloco para escolher e ajustar o tamanho.'**
+  String get editTapHint;
 }
 
 class _AppLocalizationsDelegate

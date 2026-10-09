@@ -45,69 +45,123 @@ class OverlayRenderer(private val palette: BrandPalette) {
 
     private fun alpha(c: Int, a: Float) = Color.argb((a * 255).toInt(), Color.red(c), Color.green(c), Color.blue(c))
 
-    fun render(bitmap: Bitmap, layout: OverlayLayout, st: OverlayState) {
-        val c = Canvas(bitmap)
-        bitmap.eraseColor(Color.TRANSPARENT)
-        val w = bitmap.width.toFloat()
-        val h = bitmap.height.toFloat()
-        val u0 = min(w, h) / 720f   // retrato e paisagem: referência é o lado menor
+    /** Bloco posicionado: retângulo em pixels e a unidade de escala usada. */
+    class Placed(val rect: RectF, val u: Float)
+
+    private fun distText(s: TelemetrySample) = String.format(ptBr, "%.1f km", s.distanceM / 1000.0)
+    private fun climbText(s: TelemetrySample) = String.format(ptBr, "D+ %.0f m", s.ascentM)
+    private fun gradeText(g: Double) = String.format(ptBr, "%s %.0f%%", if (g >= 0) "▲" else "▼", abs(g))
+    private fun liveText(label: String, elapsedMs: Long): String {
+        val sec = elapsedMs / 1000
+        return "$label  " + String.format(ptBr, "%02d:%02d", sec / 60, sec % 60)
+    }
+    private fun phoneText(s: TelemetrySample, clock: String) =
+        "$clock  " + (if (s.batteryPct >= 0) "${s.batteryPct}%" else "—")
+
+    /**
+     * Calcula onde cada bloco fica. Blocos com posição própria (x, y no layout) vão exatamente
+     * lá; os demais seguem o fluxo automático. Bloco sem dado não é posicionado.
+     */
+    @Synchronized fun place(w: Float, h: Float, layout: OverlayLayout, st: OverlayState): Map<String, Placed> {
+        val out = LinkedHashMap<String, Placed>()
         val s = st.sample
+        val u0 = min(w, h) / 720f   // retrato e paisagem: referência é o lado menor
         val m = 16f * u0
+        fun unit(spec: BlockSpec) = u0 * spec.sizePreset.factor * (spec.scale ?: 1f)
+        fun custom(spec: BlockSpec, bw: Float, bh: Float, u: Float): Placed? {
+            val x = spec.x ?: return null
+            val y = spec.y ?: return null
+            val l = (x * w).coerceIn(0f, max(0f, w - bw))
+            val t = (y * h).coerceIn(0f, max(0f, h - bh))
+            return Placed(RectF(l, t, l + bw, t + bh), u)
+        }
 
-        // --- blocos inferiores ---
-        val gaugeSpec = layout.block("speed_gauge")
-        val mapSpec = layout.block("minimap")?.takeIf { !layout.hideMinimap }
-        val gaugeU = u0 * (gaugeSpec?.sizePreset?.factor ?: 1f)
-        val gaugeD = 120f * gaugeU
         var leftEdge = m
-        if (gaugeSpec != null) {
-            drawGauge(c, RectF(m, h - m - gaugeD, m + gaugeD, h - m), s?.speedMps?.times(3.6), gaugeU)
-            leftEdge = m + gaugeD + 8f * gaugeU
-        }
-        val dcSpec = layout.block("distance_climb")
-        if (dcSpec != null && s != null) {
-            val u = u0 * dcSpec.sizePreset.factor
-            val wTxt = drawDistanceClimb(c, leftEdge, h - m, u, s)
-            leftEdge += wTxt + 8f * u
-        }
         var rightEdge = w - m
-        if (mapSpec != null) {
-            val u = u0 * mapSpec.sizePreset.factor
-            val d = 120f * u
-            drawMinimap(c, RectF(w - m - d, h - m - d, w - m, h - m), layout, st)
-            rightEdge = w - m - d - 8f * u
-        }
-        val profSpec = layout.block("elevation_profile")
         var profTop = h - m
-        if (profSpec != null && st.track.size >= 2 && rightEdge - leftEdge > 80f * u0) {
-            val u = u0 * profSpec.sizePreset.factor
-            val ph = 48f * u
-            drawProfile(c, RectF(leftEdge, h - m - ph, rightEdge, h - m), st.track)
-            profTop = h - m - ph
+
+        layout.block("speed_gauge")?.let { spec ->
+            val u = unit(spec); val d = 120f * u
+            val pl = custom(spec, d, d, u)
+            if (pl != null) out["speed_gauge"] = pl
+            else { out["speed_gauge"] = Placed(RectF(m, h - m - d, m + d, h - m), u); leftEdge = m + d + 8f * u }
         }
-        val gradeSpec = layout.block("grade_badge")
+        layout.block("distance_climb")?.takeIf { s != null }?.let { spec ->
+            val u = unit(spec)
+            val bw = max(measure(distText(s!!), 24f * u), measure(climbText(s), 20f * u)) + 20f * u
+            val bh = 58f * u
+            val pl = custom(spec, bw, bh, u)
+            if (pl != null) out["distance_climb"] = pl
+            else { out["distance_climb"] = Placed(RectF(leftEdge, h - m - bh, leftEdge + bw, h - m), u); leftEdge += bw + 8f * u }
+        }
+        layout.block("minimap")?.takeIf { !layout.hideMinimap }?.let { spec ->
+            val u = unit(spec); val d = 120f * u
+            val pl = custom(spec, d, d, u)
+            if (pl != null) out["minimap"] = pl
+            else { out["minimap"] = Placed(RectF(w - m - d, h - m - d, w - m, h - m), u); rightEdge = w - m - d - 8f * u }
+        }
+        layout.block("elevation_profile")?.takeIf { st.track.size >= 2 }?.let { spec ->
+            val u = unit(spec); val ph = 48f * u
+            val pl = custom(spec, 360f * u, ph, u)
+            if (pl != null) out["elevation_profile"] = pl
+            else if (rightEdge - leftEdge > 80f * u0) {
+                out["elevation_profile"] = Placed(RectF(leftEdge, h - m - ph, rightEdge, h - m), u)
+                profTop = h - m - ph
+            }
+        }
         val grade = s?.gradePct
-        if (gradeSpec != null && grade != null && abs(grade) >= 3.0) {
-            val u = u0 * gradeSpec.sizePreset.factor
-            drawGradeBadge(c, leftEdge, profTop - 8f * u, grade, u)
+        layout.block("grade_badge")?.takeIf { grade != null && abs(grade) >= 3.0 }?.let { spec ->
+            val u = unit(spec)
+            val bw = measure(gradeText(grade!!), 20f * u) + 20f * u; val bh = 30f * u
+            val pl = custom(spec, bw, bh, u)
+            out["grade_badge"] = pl ?: Placed(RectF(leftEdge, profTop - 8f * u - bh, leftEdge + bw, profTop - 8f * u), u)
         }
 
-        // --- topo ---
         var x = m
-        val liveSpec = layout.block("live_badge")
-        if (liveSpec != null && st.badge != null) {
-            val u = u0 * liveSpec.sizePreset.factor
-            x += drawLiveBadge(c, x, m, u, st.badge, st.elapsedMs) + 8f * u
+        layout.block("live_badge")?.takeIf { st.badge != null }?.let { spec ->
+            val u = unit(spec)
+            val bw = measure(liveText(st.badge!!, st.elapsedMs), 18f * u) + 36f * u; val bh = 30f * u
+            val pl = custom(spec, bw, bh, u)
+            if (pl != null) out["live_badge"] = pl
+            else { out["live_badge"] = Placed(RectF(x, m, x + bw, m + bh), u); x += bw + 8f * u }
         }
-        for ((type, label) in listOf("hr" to hrLabel, "cadence" to "RPM", "power" to "W")) {
+        for ((type, unitLabel) in listOf("hr" to hrLabel, "cadence" to "RPM", "power" to "W")) {
             val spec = layout.block(type) ?: continue
             val v = when (type) { "hr" -> s?.hrBpm; "cadence" -> s?.cadenceRpm; else -> s?.powerW } ?: continue
-            val u = u0 * spec.sizePreset.factor
-            x += drawChip(c, x, m, u, "$v", label) + 6f * u
+            val u = unit(spec)
+            val bw = measure("$v $unitLabel", 18f * u) + 20f * u; val bh = 30f * u
+            val pl = custom(spec, bw, bh, u)
+            if (pl != null) out[type] = pl
+            else { out[type] = Placed(RectF(x, m, x + bw, m + bh), u); x += bw + 6f * u }
         }
-        val phoneSpec = layout.block("phone_status")
-        if (phoneSpec != null && s != null) {
-            drawPhoneStatus(c, w - m, m, u0 * phoneSpec.sizePreset.factor, s, st.clockText)
+        layout.block("phone_status")?.takeIf { s != null }?.let { spec ->
+            val u = unit(spec)
+            val bars = if (s!!.signalLevel != null) 5 * 6f * u + 8f * u else 0f
+            val bw = measure(phoneText(s, st.clockText), 18f * u) + bars + 20f * u; val bh = 30f * u
+            out["phone_status"] = custom(spec, bw, bh, u) ?: Placed(RectF(w - m - bw, m, w - m, m + bh), u)
+        }
+        return out
+    }
+
+    @Synchronized fun render(bitmap: Bitmap, layout: OverlayLayout, st: OverlayState) {
+        val c = Canvas(bitmap)
+        bitmap.eraseColor(Color.TRANSPARENT)
+        val s = st.sample
+        val placed = place(bitmap.width.toFloat(), bitmap.height.toFloat(), layout, st)
+        for ((type, pl) in placed) {
+            val r = pl.rect; val u = pl.u
+            when (type) {
+                "speed_gauge" -> drawGauge(c, r, s?.speedMps?.times(3.6), u)
+                "distance_climb" -> s?.let { drawDistanceClimb(c, r.left, r.bottom, u, it) }
+                "minimap" -> drawMinimap(c, r, layout, st)
+                "elevation_profile" -> drawProfile(c, r, st.track)
+                "grade_badge" -> s?.gradePct?.let { drawGradeBadge(c, r.left, r.bottom, it, u) }
+                "live_badge" -> st.badge?.let { drawLiveBadge(c, r.left, r.top, u, it, st.elapsedMs) }
+                "hr" -> s?.hrBpm?.let { drawChip(c, r.left, r.top, u, "$it", hrLabel) }
+                "cadence" -> s?.cadenceRpm?.let { drawChip(c, r.left, r.top, u, "$it", "RPM") }
+                "power" -> s?.powerW?.let { drawChip(c, r.left, r.top, u, "$it", "W") }
+                "phone_status" -> s?.let { drawPhoneStatus(c, r.right, r.top, u, it, st.clockText) }
+            }
         }
     }
 

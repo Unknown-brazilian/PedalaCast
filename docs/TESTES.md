@@ -44,3 +44,10 @@ Marque ao executar. Nada abaixo foi executado ainda.
 - [ ] Parar exige segurar; MP4 local abre depois.
 - [ ] Ocultar mini-mapa durante a live; chave nunca aparece em `adb logcat`.
 - [ ] Idiomas: trocar o idioma do sistema para en/es/fr e conferir telas, notificação e rótulos do overlay.
+
+## Mover e redimensionar blocos (v0.3.0)
+- [x] Emulador: arrastar o mini-mapa e aumentar o velocímetro no editor; o perfil de elevação e a distância reorganizam; ao abrir a gravação, o preview mostra as posições salvas.
+- [ ] Aparelho real: arrastar com o dedo, pinça não existe (usa o slider); posições persistem após fechar o app.
+- [ ] Posições separadas em horizontal e vertical; "Restaurar tudo" volta ao automático.
+- [ ] Vídeo gravado com blocos movidos: conferir que o MP4 tem os blocos nas mesmas posições do preview.
+- [ ] "Ocultar mini-mapa" na live realmente some com o mini-mapa (corrigido nesta versão).

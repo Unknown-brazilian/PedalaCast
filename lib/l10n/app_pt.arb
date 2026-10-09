@@ -182,5 +182,26 @@
   },
   "ovLiveLabel": "AO VIVO",
   "ovHrLabel": "FC",
-  "ovRecLabel": "REC"
+  "ovRecLabel": "REC",
+  "editOpen": "Mover e redimensionar blocos",
+  "editTitle": "Mover e redimensionar",
+  "editResetAll": "Restaurar tudo",
+  "editResetBlock": "Restaurar bloco",
+  "editHelp": "Arraste os blocos para onde quiser. Toque em um bloco para mudar o tamanho. Posições salvas para a orientação {orientation}.",
+  "editSize": "{pct}%",
+  "editTapHint": "Toque em um bloco para escolher e ajustar o tamanho.",
+  "@editHelp": {
+    "placeholders": {
+      "orientation": {
+        "type": "String"
+      }
+    }
+  },
+  "@editSize": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  }
 }

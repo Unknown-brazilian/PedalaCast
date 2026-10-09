@@ -182,5 +182,26 @@
   },
   "ovLiveLabel": "EN VIVO",
   "ovHrLabel": "FC",
-  "ovRecLabel": "REC"
+  "ovRecLabel": "REC",
+  "editOpen": "Mover y cambiar tamaño de bloques",
+  "editTitle": "Mover y cambiar tamaño",
+  "editResetAll": "Restablecer todo",
+  "editResetBlock": "Restablecer bloque",
+  "editHelp": "Arrastra los bloques donde quieras. Toca un bloque para cambiar su tamaño. Posiciones guardadas para la orientación {orientation}.",
+  "editSize": "{pct}%",
+  "editTapHint": "Toca un bloque para seleccionarlo y ajustar su tamaño.",
+  "@editHelp": {
+    "placeholders": {
+      "orientation": {
+        "type": "String"
+      }
+    }
+  },
+  "@editSize": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  }
 }

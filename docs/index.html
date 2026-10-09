@@ -102,6 +102,7 @@ footer{padding:30px 0 50px;color:var(--muted);font-size:.9rem;border-top:1px sol
     <figure><img src="assets/01_home.jpg" alt="" loading="lazy"><figcaption data-i="c1"></figcaption></figure>
     <figure><img src="assets/02_live_setup.jpg" alt="" loading="lazy"><figcaption data-i="c2"></figcaption></figure>
     <figure><img src="assets/04_layout.jpg" alt="" loading="lazy"><figcaption data-i="c3"></figcaption></figure>
+    <figure><img src="assets/06_editor.jpg" alt="" loading="lazy"><figcaption data-i="c8"></figcaption></figure>
     <figure><img src="assets/03_settings.jpg" alt="" loading="lazy"><figcaption data-i="c4"></figcaption></figure>
     <figure><img src="assets/05_about.jpg" alt="" loading="lazy"><figcaption data-i="c5"></figcaption></figure>
   </div>
@@ -124,6 +125,7 @@ footer{padding:30px 0 50px;color:var(--muted);font-size:.9rem;border-top:1px sol
     <li><span class="tag ok" data-i="done"></span><span data-i="r2"></span></li>
     <li><span class="tag soon" data-i="soon"></span><span data-i="r3"></span></li>
     <li><span class="tag soon" data-i="soon"></span><span data-i="r4"></span></li>
+    <li><span class="tag ok" data-i="done"></span><span data-i="r6"></span></li>
     <li><span class="tag soon" data-i="soon"></span><span data-i="r5"></span></li>
   </ul>
 </section>
@@ -155,13 +157,13 @@ s3:'<b>Tap Start ride</b> to record, or <b>Go live</b> to stream to YouTube (pas
 s4:'<b>Hold the red button to stop.</b> Your video, GPX and JSON are saved on the phone, ready to share.',
 howNote:'One pipeline does it all: camera → overlay → video encoder → MP4 file and, when live, YouTube. The overlay is part of the picture, so it appears everywhere you share the video.',
 shotsH:'Screens',
-c1:'Home',c2:'YouTube Live setup',c3:'Overlay layout',c4:'Settings',c5:'About',
+c1:'Home',c2:'YouTube Live setup',c3:'Overlay layout',c4:'Settings',c5:'About',c8:'Move and resize',r6:'Movable and resizable overlay blocks, saved separately for landscape and portrait.',
 c6:'Recording screen with the live overlay preview (emulator camera).',c7:'A frame from a recorded MP4, overlay included (emulator camera).',
 shotsNote:'Screenshots taken on an Android emulator with a virtual camera and simulated GPS. The simulation mode plays a sample route so you can test the overlay without riding.',
 tipsH:'Tips',tipsT:'Xiaomi, Redmi and POCO phones:',tipsP:'the system may close apps in the background and lose a recording. Allow autostart and set the PedalaCast battery to "No restrictions" before riding. The app reminds you.',
 roadH:'Status and roadmap',done:'Done',soon:'Planned',
 r1:'Recording with overlay, GPX/JSON log, simulation mode, 4 languages.',r2:'YouTube Live with a stream key, reconnection and adaptive bitrate (not yet tested against YouTube).',
-r3:'Bluetooth sensors: heart rate, cadence, power.',r4:'Import FIT/GPX and re-render an existing video with the overlay.',r5:'Movable overlay elements and a front-camera picture-in-picture.',
+r3:'Bluetooth sensors: heart rate, cadence, power.',r4:'Import FIT/GPX and re-render an existing video with the overlay.',r5:'Front-camera picture-in-picture (only on phones that can run two cameras at once).',
 foot1:'Early version made by one person. Not tested on many phones yet. The route and grade shown are estimates, so ride safely and respect traffic.',issues:'Report a problem',srcLink:'GitHub'},
 es:{
 h1:'Graba tu paseo. <em>Muestra los datos</em> en el vídeo.',
@@ -182,13 +184,13 @@ s3:'<b>Toca Iniciar paseo</b> para grabar, o <b>Transmitir en vivo</b> para YouT
 s4:'<b>Mantén pulsado el botón rojo para detener.</b> El vídeo, el GPX y el JSON quedan guardados en el teléfono, listos para compartir.',
 howNote:'Un solo flujo lo hace todo: cámara → overlay → codificador de vídeo → archivo MP4 y, en directo, YouTube. El overlay es parte de la imagen, así que aparece donde compartas el vídeo.',
 shotsH:'Pantallas',
-c1:'Inicio',c2:'Configurar directo en YouTube',c3:'Diseño del overlay',c4:'Ajustes',c5:'Acerca de',
+c1:'Inicio',c2:'Configurar directo en YouTube',c3:'Diseño del overlay',c4:'Ajustes',c5:'Acerca de',c8:'Mover y cambiar tamaño',r6:'Bloques del overlay móviles y redimensionables, guardados por separado en horizontal y vertical.',
 c6:'Pantalla de grabación con la vista previa del overlay (cámara del emulador).',c7:'Un fotograma de un MP4 grabado, con el overlay incluido (cámara del emulador).',
 shotsNote:'Capturas hechas en un emulador de Android con cámara virtual y GPS simulado. El modo simulación reproduce un recorrido de ejemplo para probar el overlay sin pedalear.',
 tipsH:'Consejos',tipsT:'Teléfonos Xiaomi, Redmi y POCO:',tipsP:'el sistema puede cerrar apps en segundo plano y perder una grabación. Permite el inicio automático y deja la batería de PedalaCast en "Sin restricciones" antes de pedalear. La app te lo recuerda.',
 roadH:'Estado y hoja de ruta',done:'Hecho',soon:'Previsto',
 r1:'Grabación con overlay, registro GPX/JSON, modo simulación, 4 idiomas.',r2:'Directo en YouTube con clave, reconexión y bitrate adaptativo (aún sin probar contra YouTube).',
-r3:'Sensores Bluetooth: pulsaciones, cadencia, potencia.',r4:'Importar FIT/GPX y reprocesar un vídeo existente con el overlay.',r5:'Elementos del overlay móviles y cámara frontal en imagen en imagen.',
+r3:'Sensores Bluetooth: pulsaciones, cadencia, potencia.',r4:'Importar FIT/GPX y reprocesar un vídeo existente con el overlay.',r5:'Cámara frontal en imagen en imagen (solo en teléfonos que pueden usar dos cámaras a la vez).',
 foot1:'Versión temprana hecha por una persona. Aún no probada en muchos teléfonos. El recorrido y la pendiente son estimaciones: pedalea con seguridad y respeta el tráfico.',issues:'Informar de un problema',srcLink:'GitHub'},
 fr:{
 h1:'Filmez votre sortie. <em>Affichez les données</em> dans la vidéo.',
@@ -209,13 +211,13 @@ s3:'<b>Appuyez sur Démarrer la sortie</b> pour enregistrer, ou <b>Diffuser en d
 s4:'<b>Maintenez le bouton rouge pour arrêter.</b> La vidéo, le GPX et le JSON sont sauvegardés sur le téléphone, prêts à partager.',
 howNote:'Un seul flux fait tout : caméra → overlay → encodeur vidéo → fichier MP4 et, en direct, YouTube. L\'overlay fait partie de l\'image, il apparaît donc partout où vous partagez la vidéo.',
 shotsH:'Écrans',
-c1:'Accueil',c2:'Réglage du direct YouTube',c3:'Disposition de l\'overlay',c4:'Réglages',c5:'À propos',
+c1:'Accueil',c2:'Réglage du direct YouTube',c3:'Disposition de l\'overlay',c4:'Réglages',c5:'À propos',c8:'Déplacer et redimensionner',r6:'Blocs d\'overlay déplaçables et redimensionnables, enregistrés séparément en paysage et en portrait.',
 c6:'Écran d\'enregistrement avec l\'aperçu de l\'overlay (caméra de l\'émulateur).',c7:'Une image d\'un MP4 enregistré, overlay inclus (caméra de l\'émulateur).',
 shotsNote:'Captures réalisées sur un émulateur Android avec caméra virtuelle et GPS simulé. Le mode simulation rejoue un parcours d\'exemple pour tester l\'overlay sans rouler.',
 tipsH:'Conseils',tipsT:'Téléphones Xiaomi, Redmi et POCO :',tipsP:'le système peut fermer les applis en arrière-plan et perdre un enregistrement. Autorisez le démarrage automatique et réglez la batterie de PedalaCast sur « Sans restriction » avant de rouler. L\'appli vous le rappelle.',
 roadH:'État et feuille de route',done:'Fait',soon:'Prévu',
 r1:'Enregistrement avec overlay, journal GPX/JSON, mode simulation, 4 langues.',r2:'Direct YouTube avec clé, reconnexion et débit adaptatif (pas encore testé avec YouTube).',
-r3:'Capteurs Bluetooth : fréquence cardiaque, cadence, puissance.',r4:'Importer FIT/GPX et retraiter une vidéo existante avec l\'overlay.',r5:'Éléments d\'overlay déplaçables et caméra frontale en incrustation.',
+r3:'Capteurs Bluetooth : fréquence cardiaque, cadence, puissance.',r4:'Importer FIT/GPX et retraiter une vidéo existante avec l\'overlay.',r5:'Caméra frontale en incrustation (seulement sur les téléphones pouvant utiliser deux caméras à la fois).',
 foot1:'Version précoce réalisée par une seule personne. Pas encore testée sur beaucoup de téléphones. Le tracé et la pente affichés sont des estimations : roulez prudemment et respectez la circulation.',issues:'Signaler un problème',srcLink:'GitHub'},
 pt:{
 h1:'Grave seu passeio. <em>Mostre os dados</em> no vídeo.',
@@ -236,13 +238,13 @@ s3:'<b>Toque em Iniciar passeio</b> para gravar, ou <b>Transmitir ao vivo</b> pa
 s4:'<b>Segure o botão vermelho para parar.</b> O vídeo, o GPX e o JSON ficam salvos no celular, prontos para compartilhar.',
 howNote:'Um único fluxo faz tudo: câmera → overlay → codificador de vídeo → arquivo MP4 e, ao vivo, YouTube. O overlay faz parte da imagem, então aparece onde você compartilhar o vídeo.',
 shotsH:'Telas',
-c1:'Início',c2:'Configuração da live no YouTube',c3:'Layout do overlay',c4:'Ajustes',c5:'Sobre',
+c1:'Início',c2:'Configuração da live no YouTube',c3:'Layout do overlay',c4:'Ajustes',c5:'Sobre',c8:'Mover e redimensionar',r6:'Blocos do overlay móveis e redimensionáveis, salvos separadamente em horizontal e vertical.',
 c6:'Tela de gravação com a prévia do overlay (câmera do emulador).',c7:'Um quadro de um MP4 gravado, com o overlay incluído (câmera do emulador).',
 shotsNote:'Capturas feitas em um emulador Android com câmera virtual e GPS simulado. O modo simulação reproduz um percurso de exemplo para testar o overlay sem pedalar.',
 tipsH:'Dicas',tipsT:'Celulares Xiaomi, Redmi e POCO:',tipsP:'o sistema pode fechar apps em segundo plano e perder uma gravação. Permita o início automático e deixe a bateria do PedalaCast como "Sem restrições" antes de pedalar. O app lembra você.',
 roadH:'Status e roteiro',done:'Pronto',soon:'Planejado',
 r1:'Gravação com overlay, log GPX/JSON, modo simulação, 4 idiomas.',r2:'Live no YouTube com chave, reconexão e bitrate adaptativo (ainda não testada contra o YouTube).',
-r3:'Sensores Bluetooth: batimentos, cadência, potência.',r4:'Importar FIT/GPX e reprocessar um vídeo existente com o overlay.',r5:'Elementos do overlay móveis e câmera frontal em picture-in-picture.',
+r3:'Sensores Bluetooth: batimentos, cadência, potência.',r4:'Importar FIT/GPX e reprocessar um vídeo existente com o overlay.',r5:'Câmera frontal em picture-in-picture (só em celulares que usam duas câmeras ao mesmo tempo).',
 foot1:'Versão inicial feita por uma pessoa. Ainda não testada em muitos celulares. O trajeto e a inclinação mostrados são estimativas: pedale com segurança e respeite o trânsito.',issues:'Relatar um problema',srcLink:'GitHub'}
 };
 const LS='en es fr pt'.split(' ');

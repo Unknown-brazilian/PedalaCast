@@ -182,5 +182,26 @@
   },
   "ovLiveLabel": "EN DIRECT",
   "ovHrLabel": "FC",
-  "ovRecLabel": "REC"
+  "ovRecLabel": "REC",
+  "editOpen": "Déplacer et redimensionner les blocs",
+  "editTitle": "Déplacer et redimensionner",
+  "editResetAll": "Tout réinitialiser",
+  "editResetBlock": "Réinitialiser le bloc",
+  "editHelp": "Faites glisser les blocs où vous voulez. Touchez un bloc pour changer sa taille. Positions enregistrées pour l'orientation {orientation}.",
+  "editSize": "{pct}%",
+  "editTapHint": "Touchez un bloc pour le sélectionner et ajuster sa taille.",
+  "@editHelp": {
+    "placeholders": {
+      "orientation": {
+        "type": "String"
+      }
+    }
+  },
+  "@editSize": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  }
 }

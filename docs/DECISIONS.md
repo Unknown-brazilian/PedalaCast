@@ -48,3 +48,10 @@ Ajuste "Horizontal/Vertical". Vertical usa `rotation=90` no `prepareVideo` (Root
 
 ## Idiomas (v0.2.0)
 pt (padrão do projeto), en, es, fr via ARB. Fora desses, cai em inglês. O overlay é desenhado no Kotlin: idioma (formato de números) e rótulos (AO VIVO/LIVE/EN VIVO/EN DIRECT, FC/HR) são enviados pelo Flutter ao iniciar o preview. Textos da notificação em `res/values*/strings.xml`. Mensagens de erro vindas do Kotlin ainda estão em português.
+
+## Blocos móveis e redimensionáveis (v0.3.0)
+Cada bloco do layout JSON pode ter `x`, `y` (canto superior esquerdo, fração 0..1 do quadro) e `scale` (0,4–3). Sem `x/y` o bloco segue o fluxo automático (os vizinhos acompanham quando ele muda de tamanho); com `x/y` ele sai do fluxo e vai exatamente lá (limitado às bordas do quadro). Posições são salvas **por orientação** (horizontal e vertical separadas). `OverlayRenderer.place()` calcula os retângulos e é a mesma função usada pelo desenho do vídeo e pelo editor, então o que aparece no editor é o que sai no vídeo. O editor (Flutter) recebe do Kotlin um PNG do overlay com dados de exemplo e os retângulos normalizados, desenha alças por cima e re-renderiza durante o arraste.
+Bugs corrigidos junto: `AppSettings.copyWith` descartava `liveHeight`, `liveRecordLocal` e `hideMinimap`, e o JSON do layout não levava `hideMinimap` (o interruptor "Ocultar mini-mapa" nunca funcionou até aqui). Teste de regressão em `test/app_settings_test.dart`.
+
+## PIP da câmera frontal (planejado, não implementado)
+Exige câmera frontal + traseira abertas ao mesmo tempo (`CameraManager.getConcurrentCameraIds`, Android 11+, depende do chip). A RootEncoder não suporta; o plano é abrir a frontal com Camera2 próprio escrevendo em um `SurfaceFilterRender` como mais um bloco do overlay, e esconder a opção em aparelhos sem suporte.

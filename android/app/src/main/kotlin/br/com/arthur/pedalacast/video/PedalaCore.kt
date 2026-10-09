@@ -353,20 +353,11 @@ object PedalaCore {
 
     private fun clockText() = SimpleDateFormat("HH:mm", renderer.locale).format(Date())
 
-    /** Salva um PNG do overlay sobre uma imagem estática com dados fixos (tela de debug). */
-    fun renderDebugPng(layoutJson: String?, w: Int = 1280, h: Int = 720): String {
-        val bg = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-        val c = android.graphics.Canvas(bg)
-        val p = android.graphics.Paint()
-        p.shader = android.graphics.LinearGradient(0f, 0f, 0f, h.toFloat(), 0xFF5B7FA6.toInt(), 0xFF2E3B2A.toInt(), android.graphics.Shader.TileMode.CLAMP)
-        c.drawRect(0f, 0f, w.toFloat(), h.toFloat(), p)
-        val ov = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-        val lay = OverlayLayout.parse(layoutJson)
+    private fun demoState(): OverlayState {
         val track = (0..400).map {
-            val d = it * 5.0
             br.com.arthur.pedalacast.telemetry.TrackPoint(
                 -22.9 + it * 0.00003, -47.06 + 0.002 * Math.sin(it / 40.0) + it * 0.00004,
-                600 + 40 * Math.sin(it / 80.0) + it * 0.05, d,
+                600 + 40 * Math.sin(it / 80.0) + it * 0.05, it * 5.0,
             )
         }
         val sample = TelemetrySample(
@@ -374,11 +365,47 @@ object PedalaCore {
             speedMps = 7.2, altitudeM = track.last().altM, gradePct = 6.5, distanceM = 2000.0, ascentM = 182.0,
             hrBpm = 148, cadenceRpm = 86, powerW = 210, batteryPct = 72, signalLevel = 3, networkType = "Móvel",
         )
-        renderer.render(ov, lay, OverlayState(sample, track, null, recLabel, 754_000, null, "08:42"))
-        c.drawBitmap(ov, 0f, 0f, null)
+        return OverlayState(sample, track, null, recLabel, 754_000, null, "08:42")
+    }
+
+    private fun demoBackground(w: Int, h: Int): Bitmap {
+        val bg = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        val p = android.graphics.Paint()
+        p.shader = android.graphics.LinearGradient(0f, 0f, 0f, h.toFloat(), 0xFF5B7FA6.toInt(), 0xFF2E3B2A.toInt(), android.graphics.Shader.TileMode.CLAMP)
+        android.graphics.Canvas(bg).drawRect(0f, 0f, w.toFloat(), h.toFloat(), p)
+        return bg
+    }
+
+    /** Salva um PNG do overlay sobre uma imagem estática com dados fixos (tela de debug). */
+    fun renderDebugPng(layoutJson: String?, w: Int = 1280, h: Int = 720): String {
+        val bg = demoBackground(w, h)
+        val ov = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        renderer.render(ov, OverlayLayout.parse(layoutJson), demoState())
+        android.graphics.Canvas(bg).drawBitmap(ov, 0f, 0f, null)
         val (uri, out) = Storage.createImage(app, "overlay_debug_" + System.currentTimeMillis() + ".png")
         out.use { bg.compress(Bitmap.CompressFormat.PNG, 100, it) }
         return uri.toString()
+    }
+
+    /**
+     * Para o editor de posições: devolve um PNG do overlay (todos os blocos, dados de exemplo) e o
+     * retângulo normalizado (0..1) de cada bloco, para o Flutter desenhar as alças de arrastar.
+     */
+    fun renderEditor(layoutJson: String?, portrait: Boolean): Map<String, Any> {
+        val w = if (portrait) 540 else 960
+        val h = if (portrait) 960 else 540
+        val lay = OverlayLayout.parse(layoutJson).let { it.copy(hideMinimap = false) }
+        val st = demoState()
+        val bg = demoBackground(w, h)
+        val ov = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        renderer.render(ov, lay, st)
+        android.graphics.Canvas(bg).drawBitmap(ov, 0f, 0f, null)
+        val bos = java.io.ByteArrayOutputStream()
+        bg.compress(Bitmap.CompressFormat.PNG, 100, bos)
+        val rects = renderer.place(w.toFloat(), h.toFloat(), lay, st).mapValues { (_, pl) ->
+            listOf(pl.rect.left / w, pl.rect.top / h, pl.rect.right / w, pl.rect.bottom / h).map { it.toDouble() }
+        }
+        return mapOf("png" to bos.toByteArray(), "rects" to rects)
     }
 
     // ---------------- status ----------------

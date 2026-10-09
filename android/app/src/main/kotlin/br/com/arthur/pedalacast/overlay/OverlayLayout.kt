@@ -17,6 +17,11 @@ data class BlockSpec(
     val enabled: Boolean,
     val anchor: String,
     val sizePreset: SizePreset,
+    /** Posição própria (canto superior esquerdo, fração do quadro 0..1). null = automática. */
+    val x: Float? = null,
+    val y: Float? = null,
+    /** Multiplicador de tamanho deste bloco (1 = tamanho do preset). */
+    val scale: Float? = null,
 )
 
 /** Layout do overlay. O Flutter edita e salva o JSON; o Kotlin só lê e desenha. */
@@ -56,6 +61,9 @@ data class OverlayLayout(
                         enabled = b.optBoolean("enabled", true),
                         anchor = b.optString("anchor", "auto"),
                         sizePreset = SizePreset.parse(b.optString("sizePreset", "small")),
+                        x = if (b.has("x") && b.has("y")) b.getDouble("x").toFloat() else null,
+                        y = if (b.has("x") && b.has("y")) b.getDouble("y").toFloat() else null,
+                        scale = if (b.has("scale")) b.getDouble("scale").toFloat().coerceIn(0.4f, 3f) else null,
                     )
                 }
                 OverlayLayout(

@@ -149,6 +149,12 @@ class Channels(private val activity: Activity, engine: FlutterEngine) {
                 }
                 result.success(null)
             }
+            "renderEditor" -> Thread {
+                PedalaCore.setLocale(a["locale"] as? String, a["liveLabel"] as? String, a["recLabel"] as? String, a["hrLabel"] as? String)
+                runCatching { PedalaCore.renderEditor(a["layout"] as? String, (a["portrait"] as? Boolean) ?: false) }
+                    .onSuccess { main.post { result.success(it) } }
+                    .onFailure { main.post { result.error("editor", it.message, null) } }
+            }.start()
             "hasBarometer" -> result.success(PedalaCore.hasBarometer())
             "listRecordings" -> result.success(Storage.list(activity))
             "openRecording" -> {

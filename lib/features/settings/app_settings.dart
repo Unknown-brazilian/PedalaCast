@@ -3,6 +3,47 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Posição/tamanho próprio de um bloco do overlay. x,y = canto superior esquerdo (0..1 do quadro).
+/// x/y nulos = posição automática; scale nulo = tamanho do preset.
+class BlockPos {
+  const BlockPos({this.x, this.y, this.scale});
+  final double? x;
+  final double? y;
+  final double? scale;
+
+  bool get isEmpty => x == null && y == null && scale == null;
+
+  Map<String, dynamic> toJson() => {
+    if (x != null && y != null) 'x': x,
+    if (x != null && y != null) 'y': y,
+    if (scale != null) 'scale': scale,
+  };
+
+  factory BlockPos.fromJson(Map<String, dynamic> j) => BlockPos(
+    x: (j['x'] as num?)?.toDouble(),
+    y: (j['y'] as num?)?.toDouble(),
+    scale: (j['scale'] as num?)?.toDouble(),
+  );
+}
+
+Map<String, BlockPos> decodePos(String? raw) {
+  if (raw == null || raw.isEmpty) return const {};
+  try {
+    final m = jsonDecode(raw) as Map<String, dynamic>;
+    return {
+      for (final e in m.entries)
+        e.key: BlockPos.fromJson(e.value as Map<String, dynamic>),
+    };
+  } catch (_) {
+    return const {};
+  }
+}
+
+String encodePos(Map<String, BlockPos> m) => jsonEncode({
+  for (final e in m.entries)
+    if (!e.value.isEmpty) e.key: e.value.toJson(),
+});
+
 /// Configurações persistidas. O layout do overlay é um JSON lido pelo Kotlin.
 class AppSettings {
   const AppSettings({
@@ -21,6 +62,8 @@ class AppSettings {
     this.liveHeight = 720,
     this.liveRecordLocal = true,
     this.hideMinimap = false,
+    this.posLandscape = const {},
+    this.posPortrait = const {},
   });
 
   final int height; // 1080 ou 720
@@ -38,6 +81,11 @@ class AppSettings {
   final int liveHeight; // 720 ou 1080
   final bool liveRecordLocal;
   final bool hideMinimap;
+  final Map<String, BlockPos> posLandscape;
+  final Map<String, BlockPos> posPortrait;
+
+  /// Posições dos blocos na orientação atual (cada orientação tem as suas).
+  Map<String, BlockPos> get blockPos => portrait ? posPortrait : posLandscape;
 
   int get width => height == 1080 ? 1920 : 1280;
   int get liveWidth => liveHeight == 1080 ? 1920 : 1280;
@@ -67,9 +115,11 @@ class AppSettings {
           'enabled': !disabled.contains(t),
           'anchor': 'auto',
           'sizePreset': sizePreset,
+          ...?blockPos[t]?.toJson(),
         },
     ],
     'minimapFullTrack': minimapFullTrack,
+    'hideMinimap': hideMinimap,
     'privacyRadiusM': privacyRadiusM,
   });
 
@@ -89,6 +139,8 @@ class AppSettings {
     int? liveHeight,
     bool? liveRecordLocal,
     bool? hideMinimap,
+    Map<String, BlockPos>? posLandscape,
+    Map<String, BlockPos>? posPortrait,
   }) => AppSettings(
     height: height ?? this.height,
     portrait: portrait ?? this.portrait,
@@ -102,6 +154,11 @@ class AppSettings {
     disabled: disabled ?? this.disabled,
     minimapFullTrack: minimapFullTrack ?? this.minimapFullTrack,
     safetyAccepted: safetyAccepted ?? this.safetyAccepted,
+    liveHeight: liveHeight ?? this.liveHeight,
+    liveRecordLocal: liveRecordLocal ?? this.liveRecordLocal,
+    hideMinimap: hideMinimap ?? this.hideMinimap,
+    posLandscape: posLandscape ?? this.posLandscape,
+    posPortrait: posPortrait ?? this.posPortrait,
   );
 }
 
@@ -132,6 +189,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
       liveHeight: p.getInt('liveHeight') ?? 720,
       liveRecordLocal: p.getBool('liveRecordLocal') ?? true,
       hideMinimap: p.getBool('hideMinimap') ?? false,
+      posLandscape: decodePos(p.getString('posLandscape')),
+      posPortrait: decodePos(p.getString('posPortrait')),
     );
   }
 
@@ -153,6 +212,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
     await p.setInt('liveHeight', s.liveHeight);
     await p.setBool('liveRecordLocal', s.liveRecordLocal);
     await p.setBool('hideMinimap', s.hideMinimap);
+    await p.setString('posLandscape', encodePos(s.posLandscape));
+    await p.setString('posPortrait', encodePos(s.posPortrait));
   }
 }
 

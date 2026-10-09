@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../settings/app_settings.dart';
+import 'layout_editor_screen.dart';
 
 class LayoutScreen extends ConsumerWidget {
   const LayoutScreen({super.key});
@@ -61,6 +62,18 @@ class LayoutScreen extends ConsumerWidget {
                       n.update(s.copyWith(sizePreset: v.first)),
                 ),
               ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: FilledButton.tonalIcon(
+              icon: const Icon(Icons.open_with),
+              label: Text(l.editOpen),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const LayoutEditorScreen(),
+                ),
+              ),
             ),
           ),
           _header(context, l.layoutBlocks),

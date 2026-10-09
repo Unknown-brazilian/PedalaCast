@@ -426,4 +426,30 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get ovRecLabel => 'REC';
+
+  @override
+  String get editOpen => 'Déplacer et redimensionner les blocs';
+
+  @override
+  String get editTitle => 'Déplacer et redimensionner';
+
+  @override
+  String get editResetAll => 'Tout réinitialiser';
+
+  @override
+  String get editResetBlock => 'Réinitialiser le bloc';
+
+  @override
+  String editHelp(String orientation) {
+    return 'Faites glisser les blocs où vous voulez. Touchez un bloc pour changer sa taille. Positions enregistrées pour l\'orientation $orientation.';
+  }
+
+  @override
+  String editSize(int pct) {
+    return '$pct%';
+  }
+
+  @override
+  String get editTapHint =>
+      'Touchez un bloc pour le sélectionner et ajuster sa taille.';
 }
