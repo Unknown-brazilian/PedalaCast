@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PedalaCast: ride videos with live telemetry</title>
+<meta name="description" content="Android app that records bike rides and streams live to YouTube with a speed, map, distance and elevation overlay burned into the video.">
+<link rel="icon" href="assets/icon.png">
+<style>
+:root{--bg:#1F2430;--surface:#2A3040;--accent:#FF7A2F;--live:#FF4D3D;--text:#fff;--muted:#B4B8C2;--warn:#FFC857}
+@media (prefers-color-scheme: light){:root{--bg:#1F2430}} /* brand is dark-first */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.15rem;text-decoration:none;color:var(--text)}
+.brand img{width:36px;height:36px;border-radius:9px}
+.lang{display:flex;gap:6px}
+.lang button{background:var(--surface);color:var(--text);border:1px solid transparent;border-radius:8px;padding:6px 10px;font:inherit;font-size:.85rem;cursor:pointer}
+.lang button[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+.hero{display:grid;grid-template-columns:1fr;gap:28px;padding:28px 0 40px;align-items:center}
+@media(min-width:860px){.hero{grid-template-columns:1fr 1.2fr}}
+h1{font-size:clamp(1.9rem,5vw,3rem);line-height:1.15;margin:0 0 14px}
+h1 em{font-style:normal;color:var(--accent)}
+.lead{color:var(--muted);font-size:1.1rem;margin:0 0 22px}
+.btn{display:inline-block;background:var(--accent);color:var(--bg);font-weight:700;text-decoration:none;padding:14px 22px;border-radius:999px;margin:0 8px 8px 0}
+.btn.alt{background:var(--surface);color:var(--text)}
+.shot{border-radius:14px;width:100%;height:auto;display:block;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.cap{color:var(--muted);font-size:.85rem;margin:8px 2px 0}
+section{padding:36px 0;border-top:1px solid rgba(255,255,255,.08)}
+h2{font-size:1.6rem;margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:var(--surface);border-radius:14px;padding:18px}
+.card h3{margin:0 0 6px;font-size:1.05rem}
+.card p{margin:0;color:var(--muted)}
+.steps{counter-reset:s;display:grid;gap:14px;padding:0;list-style:none}
+.steps li{counter-increment:s;background:var(--surface);border-radius:14px;padding:16px 16px 16px 60px;position:relative}
+.steps li::before{content:counter(s);position:absolute;left:16px;top:14px;width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--bg);font-weight:700;display:grid;place-items:center}
+.phones{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.phones figure{margin:0}
+.phones img{width:100%;height:auto;border-radius:14px;display:block}
+.phones figcaption{color:var(--muted);font-size:.85rem;margin-top:6px;text-align:center}
+.note{border-left:4px solid var(--warn);background:var(--surface);padding:12px 16px;border-radius:8px;color:var(--muted)}
+.note b{color:var(--warn)}
+.road{display:grid;gap:8px;padding:0;list-style:none}
+.road li{background:var(--surface);border-radius:10px;padding:10px 14px}
+.tag{font-size:.75rem;border-radius:999px;padding:2px 9px;margin-right:8px;font-weight:700}
+.tag.ok{background:var(--accent);color:var(--bg)}
+.tag.soon{background:transparent;border:1px solid var(--muted);color:var(--muted)}
+footer{padding:30px 0 50px;color:var(--muted);font-size:.9rem;border-top:1px solid rgba(255,255,255,.08)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="brand" href="#"><img src="assets/icon.png" alt=""><span>PedalaCast</span></a>
+  <div class="lang" role="group" aria-label="Language">
+    <button data-l="en">EN</button><button data-l="es">ES</button><button data-l="fr">FR</button><button data-l="pt">PT</button>
+  </div>
+</header>
+
+<div class="hero">
+  <div>
+    <h1 data-i="h1"></h1>
+    <p class="lead" data-i="lead"></p>
+    <a class="btn" href="https://github.com/Unknown-brazilian/PedalaCast/releases/latest" data-i="dl"></a>
+    <a class="btn alt" href="https://github.com/Unknown-brazilian/PedalaCast" data-i="src"></a>
+    <p class="cap" data-i="req"></p>
+  </div>
+  <div>
+    <img class="shot" src="assets/overlay.jpg" alt="Speedometer, distance, climb, elevation profile, grade badge and mini-map over a video frame">
+    <p class="cap" data-i="overlayCap"></p>
+  </div>
+</div>
+
+<section id="what">
+  <h2 data-i="whatH"></h2>
+  <p data-i="whatP"></p>
+  <div class="grid">
+    <div class="card"><h3 data-i="f1h"></h3><p data-i="f1p"></p></div>
+    <div class="card"><h3 data-i="f2h"></h3><p data-i="f2p"></p></div>
+    <div class="card"><h3 data-i="f3h"></h3><p data-i="f3p"></p></div>
+    <div class="card"><h3 data-i="f4h"></h3><p data-i="f4p"></p></div>
+    <div class="card"><h3 data-i="f5h"></h3><p data-i="f5p"></p></div>
+    <div class="card"><h3 data-i="f6h"></h3><p data-i="f6p"></p></div>
+  </div>
+</section>
+
+<section id="how">
+  <h2 data-i="howH"></h2>
+  <ol class="steps">
+    <li data-i="s1"></li><li data-i="s2"></li><li data-i="s3"></li><li data-i="s4"></li>
+  </ol>
+  <p class="cap" data-i="howNote"></p>
+</section>
+
+<section id="shots">
+  <h2 data-i="shotsH"></h2>
+  <div class="phones">
+    <figure><img src="assets/01_home.jpg" alt="" loading="lazy"><figcaption data-i="c1"></figcaption></figure>
+    <figure><img src="assets/02_live_setup.jpg" alt="" loading="lazy"><figcaption data-i="c2"></figcaption></figure>
+    <figure><img src="assets/04_layout.jpg" alt="" loading="lazy"><figcaption data-i="c3"></figcaption></figure>
+    <figure><img src="assets/03_settings.jpg" alt="" loading="lazy"><figcaption data-i="c4"></figcaption></figure>
+    <figure><img src="assets/05_about.jpg" alt="" loading="lazy"><figcaption data-i="c5"></figcaption></figure>
+  </div>
+  <div class="grid" style="margin-top:18px">
+    <div><img class="shot" src="assets/recording.jpg" alt="" loading="lazy"><p class="cap" data-i="c6"></p></div>
+    <div><img class="shot" src="assets/frame.jpg" alt="" loading="lazy"><p class="cap" data-i="c7"></p></div>
+  </div>
+  <p class="cap" data-i="shotsNote"></p>
+</section>
+
+<section id="tips">
+  <h2 data-i="tipsH"></h2>
+  <div class="note"><b data-i="tipsT"></b> <span data-i="tipsP"></span></div>
+</section>
+
+<section id="road">
+  <h2 data-i="roadH"></h2>
+  <ul class="road">
+    <li><span class="tag ok" data-i="done"></span><span data-i="r1"></span></li>
+    <li><span class="tag ok" data-i="done"></span><span data-i="r2"></span></li>
+    <li><span class="tag soon" data-i="soon"></span><span data-i="r3"></span></li>
+    <li><span class="tag soon" data-i="soon"></span><span data-i="r4"></span></li>
+    <li><span class="tag soon" data-i="soon"></span><span data-i="r5"></span></li>
+  </ul>
+</section>
+
+<footer>
+  <p data-i="foot1"></p>
+  <p><a href="https://github.com/Unknown-brazilian/PedalaCast/issues" data-i="issues"></a> · <a href="https://github.com/Unknown-brazilian/PedalaCast" data-i="srcLink"></a></p>
+</footer>
+</div>
+
+<script>
+const T={
+en:{
+h1:'Record your ride. <em>Show the data</em> in the video.',
+lead:'PedalaCast is a free Android app that records your bike rides and streams live to YouTube, with speed, distance, climb, grade, elevation profile and a route mini-map burned right into the video.',
+dl:'Download the APK',src:'Source code',req:'Android 10 or newer. Early version: install from a GitHub release (allow "unknown sources").',
+overlayCap:'The overlay the app draws on the video (rendered by the app itself).',
+whatH:'What is it?',whatP:'Think of an action camera\'s data overlay, but using only your phone: GPS, barometer (when available), battery and signal. No account, no ads, no tracking.',
+f1h:'Overlay inside the video',f1p:'Arc speedometer, distance, climb (D+), grade badge, elevation profile and a round route mini-map, in the recording and in the live stream.',
+f2h:'Live on YouTube',f2p:'Paste your stream key from YouTube Studio and go live over RTMPS, with automatic reconnection and adaptive bitrate.',
+f3h:'Never lose the ride',f3p:'A local copy is recorded while you stream and keeps going if the network drops. A GPX and a JSON log are saved with every video.',
+f4h:'Privacy first',f4p:'No account and no analytics. A privacy zone hides the route around your start point (your home) in the mini-map.',
+f5h:'Made for the bike',f5p:'Big buttons, landscape or portrait, and stopping needs a long press so a bump can\'t end your recording.',
+f6h:'4 languages',f6p:'English, Spanish, French and Portuguese, following your phone language.',
+howH:'How it works',
+s1:'<b>Open the app and allow camera, microphone and precise location.</b> Mount the phone firmly on the handlebar.',
+s2:'<b>Choose what to show.</b> Turn overlay blocks on or off and pick small, medium or large.',
+s3:'<b>Tap Start ride</b> to record, or <b>Go live</b> to stream to YouTube (paste your stream key once).',
+s4:'<b>Hold the red button to stop.</b> Your video, GPX and JSON are saved on the phone, ready to share.',
+howNote:'One pipeline does it all: camera → overlay → video encoder → MP4 file and, when live, YouTube. The overlay is part of the picture, so it appears everywhere you share the video.',
+shotsH:'Screens',
+c1:'Home',c2:'YouTube Live setup',c3:'Overlay layout',c4:'Settings',c5:'About',
+c6:'Recording screen with the live overlay preview (emulator camera).',c7:'A frame from a recorded MP4, overlay included (emulator camera).',
+shotsNote:'Screenshots taken on an Android emulator with a virtual camera and simulated GPS. The simulation mode plays a sample route so you can test the overlay without riding.',
+tipsH:'Tips',tipsT:'Xiaomi, Redmi and POCO phones:',tipsP:'the system may close apps in the background and lose a recording. Allow autostart and set the PedalaCast battery to "No restrictions" before riding. The app reminds you.',
+roadH:'Status and roadmap',done:'Done',soon:'Planned',
+r1:'Recording with overlay, GPX/JSON log, simulation mode, 4 languages.',r2:'YouTube Live with a stream key, reconnection and adaptive bitrate (not yet tested against YouTube).',
+r3:'Bluetooth sensors: heart rate, cadence, power.',r4:'Import FIT/GPX and re-render an existing video with the overlay.',r5:'Movable overlay elements and a front-camera picture-in-picture.',
+foot1:'Early version made by one person. Not tested on many phones yet. The route and grade shown are estimates, so ride safely and respect traffic.',issues:'Report a problem',srcLink:'GitHub'},
+es:{
+h1:'Graba tu paseo. <em>Muestra los datos</em> en el vídeo.',
+lead:'PedalaCast es una app gratuita para Android que graba tus paseos en bici y transmite en directo a YouTube, con velocidad, distancia, desnivel, pendiente, perfil de elevación y un minimapa del recorrido dentro del propio vídeo.',
+dl:'Descargar el APK',src:'Código fuente',req:'Android 10 o superior. Versión temprana: se instala desde una release de GitHub (permite "fuentes desconocidas").',
+overlayCap:'El overlay que la app dibuja sobre el vídeo (generado por la propia app).',
+whatH:'¿Qué es?',whatP:'Piensa en los datos de una cámara de acción, pero solo con tu teléfono: GPS, barómetro (si lo tiene), batería y señal. Sin cuenta, sin anuncios, sin rastreo.',
+f1h:'Overlay dentro del vídeo',f1p:'Velocímetro en arco, distancia, desnivel (D+), indicador de pendiente, perfil de elevación y minimapa redondo del recorrido, en la grabación y en la transmisión.',
+f2h:'En directo en YouTube',f2p:'Pega tu clave de transmisión de YouTube Studio y sal en vivo por RTMPS, con reconexión automática y bitrate adaptativo.',
+f3h:'Nunca pierdas el paseo',f3p:'Se graba una copia local mientras transmites y continúa si se cae la red. Con cada vídeo se guardan un GPX y un registro JSON.',
+f4h:'Privacidad primero',f4p:'Sin cuenta y sin analítica. Una zona de privacidad oculta el recorrido alrededor del punto de partida (tu casa) en el minimapa.',
+f5h:'Pensada para la bici',f5p:'Botones grandes, horizontal o vertical, y detener exige una pulsación larga para que un bache no termine tu grabación.',
+f6h:'4 idiomas',f6p:'Español, inglés, francés y portugués, según el idioma de tu teléfono.',
+howH:'Cómo funciona',
+s1:'<b>Abre la app y permite cámara, micrófono y ubicación precisa.</b> Fija bien el teléfono al manillar.',
+s2:'<b>Elige qué mostrar.</b> Activa o desactiva bloques del overlay y elige pequeño, mediano o grande.',
+s3:'<b>Toca Iniciar paseo</b> para grabar, o <b>Transmitir en vivo</b> para YouTube (pega tu clave una vez).',
+s4:'<b>Mantén pulsado el botón rojo para detener.</b> El vídeo, el GPX y el JSON quedan guardados en el teléfono, listos para compartir.',
+howNote:'Un solo flujo lo hace todo: cámara → overlay → codificador de vídeo → archivo MP4 y, en directo, YouTube. El overlay es parte de la imagen, así que aparece donde compartas el vídeo.',
+shotsH:'Pantallas',
+c1:'Inicio',c2:'Configurar directo en YouTube',c3:'Diseño del overlay',c4:'Ajustes',c5:'Acerca de',
+c6:'Pantalla de grabación con la vista previa del overlay (cámara del emulador).',c7:'Un fotograma de un MP4 grabado, con el overlay incluido (cámara del emulador).',
+shotsNote:'Capturas hechas en un emulador de Android con cámara virtual y GPS simulado. El modo simulación reproduce un recorrido de ejemplo para probar el overlay sin pedalear.',
+tipsH:'Consejos',tipsT:'Teléfonos Xiaomi, Redmi y POCO:',tipsP:'el sistema puede cerrar apps en segundo plano y perder una grabación. Permite el inicio automático y deja la batería de PedalaCast en "Sin restricciones" antes de pedalear. La app te lo recuerda.',
+roadH:'Estado y hoja de ruta',done:'Hecho',soon:'Previsto',
+r1:'Grabación con overlay, registro GPX/JSON, modo simulación, 4 idiomas.',r2:'Directo en YouTube con clave, reconexión y bitrate adaptativo (aún sin probar contra YouTube).',
+r3:'Sensores Bluetooth: pulsaciones, cadencia, potencia.',r4:'Importar FIT/GPX y reprocesar un vídeo existente con el overlay.',r5:'Elementos del overlay móviles y cámara frontal en imagen en imagen.',
+foot1:'Versión temprana hecha por una persona. Aún no probada en muchos teléfonos. El recorrido y la pendiente son estimaciones: pedalea con seguridad y respeta el tráfico.',issues:'Informar de un problema',srcLink:'GitHub'},
+fr:{
+h1:'Filmez votre sortie. <em>Affichez les données</em> dans la vidéo.',
+lead:'PedalaCast est une application Android gratuite qui enregistre vos sorties à vélo et diffuse en direct sur YouTube, avec vitesse, distance, dénivelé, pente, profil d\'altitude et mini-carte du parcours incrustés dans la vidéo.',
+dl:'Télécharger l\'APK',src:'Code source',req:'Android 10 ou plus. Version précoce : installation depuis une release GitHub (autorisez les « sources inconnues »).',
+overlayCap:'L\'overlay que l\'appli dessine sur la vidéo (généré par l\'appli elle-même).',
+whatH:'De quoi s\'agit-il ?',whatP:'Les données d\'une caméra d\'action, mais avec votre seul téléphone : GPS, baromètre (s\'il existe), batterie et signal. Sans compte, sans publicité, sans pistage.',
+f1h:'Overlay dans la vidéo',f1p:'Compteur en arc, distance, dénivelé (D+), pastille de pente, profil d\'altitude et mini-carte ronde du parcours, dans l\'enregistrement et dans le direct.',
+f2h:'Direct sur YouTube',f2p:'Collez votre clé de diffusion de YouTube Studio et passez en direct en RTMPS, avec reconnexion automatique et débit adaptatif.',
+f3h:'Ne perdez jamais la sortie',f3p:'Une copie locale est enregistrée pendant le direct et continue si le réseau coupe. Un GPX et un journal JSON sont sauvegardés avec chaque vidéo.',
+f4h:'Confidentialité d\'abord',f4p:'Sans compte et sans analyse d\'usage. Une zone de confidentialité masque le tracé autour du point de départ (votre domicile) sur la mini-carte.',
+f5h:'Pensée pour le vélo',f5p:'Gros boutons, paysage ou portrait, et l\'arrêt demande un appui long pour qu\'un choc ne coupe pas l\'enregistrement.',
+f6h:'4 langues',f6p:'Français, anglais, espagnol et portugais, selon la langue de votre téléphone.',
+howH:'Comment ça marche',
+s1:'<b>Ouvrez l\'appli et autorisez caméra, micro et position précise.</b> Fixez solidement le téléphone au guidon.',
+s2:'<b>Choisissez quoi afficher.</b> Activez ou désactivez les blocs de l\'overlay et choisissez petit, moyen ou grand.',
+s3:'<b>Appuyez sur Démarrer la sortie</b> pour enregistrer, ou <b>Diffuser en direct</b> pour YouTube (collez votre clé une fois).',
+s4:'<b>Maintenez le bouton rouge pour arrêter.</b> La vidéo, le GPX et le JSON sont sauvegardés sur le téléphone, prêts à partager.',
+howNote:'Un seul flux fait tout : caméra → overlay → encodeur vidéo → fichier MP4 et, en direct, YouTube. L\'overlay fait partie de l\'image, il apparaît donc partout où vous partagez la vidéo.',
+shotsH:'Écrans',
+c1:'Accueil',c2:'Réglage du direct YouTube',c3:'Disposition de l\'overlay',c4:'Réglages',c5:'À propos',
+c6:'Écran d\'enregistrement avec l\'aperçu de l\'overlay (caméra de l\'émulateur).',c7:'Une image d\'un MP4 enregistré, overlay inclus (caméra de l\'émulateur).',
+shotsNote:'Captures réalisées sur un émulateur Android avec caméra virtuelle et GPS simulé. Le mode simulation rejoue un parcours d\'exemple pour tester l\'overlay sans rouler.',
+tipsH:'Conseils',tipsT:'Téléphones Xiaomi, Redmi et POCO :',tipsP:'le système peut fermer les applis en arrière-plan et perdre un enregistrement. Autorisez le démarrage automatique et réglez la batterie de PedalaCast sur « Sans restriction » avant de rouler. L\'appli vous le rappelle.',
+roadH:'État et feuille de route',done:'Fait',soon:'Prévu',
+r1:'Enregistrement avec overlay, journal GPX/JSON, mode simulation, 4 langues.',r2:'Direct YouTube avec clé, reconnexion et débit adaptatif (pas encore testé avec YouTube).',
+r3:'Capteurs Bluetooth : fréquence cardiaque, cadence, puissance.',r4:'Importer FIT/GPX et retraiter une vidéo existante avec l\'overlay.',r5:'Éléments d\'overlay déplaçables et caméra frontale en incrustation.',
+foot1:'Version précoce réalisée par une seule personne. Pas encore testée sur beaucoup de téléphones. Le tracé et la pente affichés sont des estimations : roulez prudemment et respectez la circulation.',issues:'Signaler un problème',srcLink:'GitHub'},
+pt:{
+h1:'Grave seu passeio. <em>Mostre os dados</em> no vídeo.',
+lead:'O PedalaCast é um app gratuito para Android que grava seus passeios de bike e transmite ao vivo no YouTube, com velocidade, distância, ganho de elevação, inclinação, perfil de elevação e mini-mapa do trajeto gravados dentro do próprio vídeo.',
+dl:'Baixar o APK',src:'Código-fonte',req:'Android 10 ou superior. Versão inicial: instale por uma release do GitHub (permita "fontes desconhecidas").',
+overlayCap:'O overlay que o app desenha no vídeo (gerado pelo próprio app).',
+whatH:'O que é?',whatP:'Pense nos dados de uma câmera de ação, mas só com o celular: GPS, barômetro (quando existe), bateria e sinal. Sem conta, sem anúncios, sem rastreamento.',
+f1h:'Overlay dentro do vídeo',f1p:'Velocímetro em arco, distância, ganho de elevação (D+), selo de inclinação, perfil de elevação e mini-mapa redondo do trajeto, na gravação e na live.',
+f2h:'Live no YouTube',f2p:'Cole a chave de transmissão do YouTube Studio e entre ao vivo por RTMPS, com reconexão automática e bitrate adaptativo.',
+f3h:'Nunca perca o passeio',f3p:'Uma cópia local é gravada durante a live e continua se a rede cair. Um GPX e um log JSON são salvos com cada vídeo.',
+f4h:'Privacidade em primeiro lugar',f4p:'Sem conta e sem analytics. Uma zona de privacidade esconde o trajeto em volta do ponto de partida (sua casa) no mini-mapa.',
+f5h:'Feito para a bike',f5p:'Botões grandes, horizontal ou vertical, e parar exige segurar o botão para que um solavanco não encerre a gravação.',
+f6h:'4 idiomas',f6p:'Português, inglês, espanhol e francês, conforme o idioma do celular.',
+howH:'Como funciona',
+s1:'<b>Abra o app e permita câmera, microfone e localização precisa.</b> Prenda o celular com firmeza no guidão.',
+s2:'<b>Escolha o que mostrar.</b> Ligue ou desligue os blocos do overlay e escolha pequeno, médio ou grande.',
+s3:'<b>Toque em Iniciar passeio</b> para gravar, ou <b>Transmitir ao vivo</b> para o YouTube (cole a chave uma vez).',
+s4:'<b>Segure o botão vermelho para parar.</b> O vídeo, o GPX e o JSON ficam salvos no celular, prontos para compartilhar.',
+howNote:'Um único fluxo faz tudo: câmera → overlay → codificador de vídeo → arquivo MP4 e, ao vivo, YouTube. O overlay faz parte da imagem, então aparece onde você compartilhar o vídeo.',
+shotsH:'Telas',
+c1:'Início',c2:'Configuração da live no YouTube',c3:'Layout do overlay',c4:'Ajustes',c5:'Sobre',
+c6:'Tela de gravação com a prévia do overlay (câmera do emulador).',c7:'Um quadro de um MP4 gravado, com o overlay incluído (câmera do emulador).',
+shotsNote:'Capturas feitas em um emulador Android com câmera virtual e GPS simulado. O modo simulação reproduz um percurso de exemplo para testar o overlay sem pedalar.',
+tipsH:'Dicas',tipsT:'Celulares Xiaomi, Redmi e POCO:',tipsP:'o sistema pode fechar apps em segundo plano e perder uma gravação. Permita o início automático e deixe a bateria do PedalaCast como "Sem restrições" antes de pedalar. O app lembra você.',
+roadH:'Status e roteiro',done:'Pronto',soon:'Planejado',
+r1:'Gravação com overlay, log GPX/JSON, modo simulação, 4 idiomas.',r2:'Live no YouTube com chave, reconexão e bitrate adaptativo (ainda não testada contra o YouTube).',
+r3:'Sensores Bluetooth: batimentos, cadência, potência.',r4:'Importar FIT/GPX e reprocessar um vídeo existente com o overlay.',r5:'Elementos do overlay móveis e câmera frontal em picture-in-picture.',
+foot1:'Versão inicial feita por uma pessoa. Ainda não testada em muitos celulares. O trajeto e a inclinação mostrados são estimativas: pedale com segurança e respeite o trânsito.',issues:'Relatar um problema',srcLink:'GitHub'}
+};
+const LS='en es fr pt'.split(' ');
+function pick(){try{const s=localStorage.getItem('lang');if(s&&T[s])return s}catch(e){}
+  const n=(navigator.language||'en').slice(0,2).toLowerCase();return T[n]?n:'en'}
+function apply(l){
+  document.documentElement.lang=l;
+  document.querySelectorAll('[data-i]').forEach(el=>{el.innerHTML=T[l][el.dataset.i]||''});
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===l));
+  document.title='PedalaCast: '+T[l].lead.split('.')[0];
+  try{localStorage.setItem('lang',l)}catch(e){}
+}
+document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>apply(b.dataset.l)));
+apply(pick());
+</script>
+</body>
+</html>
